@@ -1,0 +1,38 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Nunito", ui-rounded, system-ui, sans-serif;
+
+  --animate-shake: shake 0.4s ease-in-out;
+  --animate-pop: pop 0.35s ease-out;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-star: star-in 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  --animate-float-up: float-up 0.9s ease-out forwards;
+
+  @keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-10px); }
+    40%, 80% { transform: translateX(10px); }
+  }
+  @keyframes pop {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.12); }
+    100% { transform: scale(1); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  @keyframes float-up {
+    0% { transform: translateY(0); opacity: 1; }
+    100% { transform: translateY(-28px); opacity: 0; }
+  }
+  @keyframes star-in {
+    0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+    100% { transform: scale(1) rotate(0); opacity: 1; }
+  }
+}
+
+body {
+  @apply min-h-screen bg-gradient-to-br from-violet-50 via-sky-50 to-amber-50 text-slate-800 antialiased;
+}
