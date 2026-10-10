@@ -1,9 +1,9 @@
 import type { Stars } from '../../lib/storage'
+import { pick, starsFor, type Rng } from '../shared/rules'
 import type { Operation } from './operations'
 
 export const PRACTICE_COUNT = 15
 export const TIME_ATTACK_SECONDS = 60
-export const BASE_POINTS = 10
 
 /**
  * `left ∘ right = answer`, e.g. 3 × 6 = 18. `group` is the table or level the
@@ -22,11 +22,7 @@ export interface QuestionResult {
   firstTry: boolean
 }
 
-export type Rng = () => number
-
 const sameQuestion = (a: Question, b: Question) => a.left === b.left && a.right === b.right && a.group === b.group
-
-const pick = <T>(items: readonly T[], rng: Rng): T => items[Math.floor(rng() * items.length)]
 
 /** A random question from the given groups that differs from `previous`. */
 export function randomQuestion(op: Operation, groups: readonly number[], previous?: Question, rng: Rng = Math.random): Question {
@@ -64,32 +60,6 @@ export function randomQuestions(op: Operation, groups: readonly number[], count:
   return result
 }
 
-/** Moves the current (wrongly answered) question to the end of the queue. */
-export function requeue<T>(queue: readonly T[]): T[] {
-  if (queue.length <= 1) return [...queue]
-  return [...queue.slice(1), queue[0]]
-}
-
-/** Points multiplier for a streak (the streak includes the current answer). */
-export function streakMultiplier(streak: number): 1 | 2 | 3 {
-  if (streak >= 10) return 3
-  if (streak >= 5) return 2
-  return 1
-}
-
-export function pointsFor(streak: number): number {
-  return BASE_POINTS * streakMultiplier(streak)
-}
-
-export function starsFor(firstTryCorrect: number, total: number): Stars {
-  if (total <= 0) return 0
-  if (firstTryCorrect >= total) return 3
-  const ratio = firstTryCorrect / total
-  if (ratio >= 0.8) return 2
-  if (ratio >= 0.6) return 1
-  return 0
-}
-
 /** Stars for each group that appeared in the round, based on that group's questions only. */
 export function starsByGroup(results: readonly QuestionResult[]): Map<number, Stars> {
   const perGroup = new Map<number, { correct: number; total: number }>()
@@ -102,30 +72,12 @@ export function starsByGroup(results: readonly QuestionResult[]): Map<number, St
   return new Map([...perGroup].map(([group, { correct, total }]) => [group, starsFor(correct, total)]))
 }
 
-/** Keeps the better of the stored and newly earned stars. */
-export function mergeStars(
-  stored: Partial<Record<number, Stars>>,
-  earned: Map<number, Stars>,
-): Partial<Record<number, Stars>> {
-  const merged = { ...stored }
-  for (const [group, stars] of earned) {
-    merged[group] = Math.max(merged[group] ?? 0, stars) as Stars
-  }
-  return merged
-}
-
 /** Stars for the time-attack result screen (not stored per group). */
 export function timeAttackStars(correct: number): Stars {
   if (correct >= 30) return 3
   if (correct >= 20) return 2
   if (correct >= 10) return 1
   return 0
-}
-
-const PRAISE = ['Skvělé!', 'Jsi hvězda!', 'Paráda!', 'Výborně!', 'Super!', 'Bomba!', 'Neuvěřitelné!', 'Jen tak dál!']
-
-export function randomPraise(rng: Rng = Math.random): string {
-  return PRAISE[Math.floor(rng() * PRAISE.length)]
 }
 
 /** Parses `?g=2,6,7` into a sorted list of the operation's valid groups. */

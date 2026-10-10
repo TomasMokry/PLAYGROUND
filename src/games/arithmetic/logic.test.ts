@@ -1,26 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import {
-  mergeStars,
-  parseGroups,
-  pointsFor,
-  randomQuestion,
-  randomQuestions,
-  requeue,
-  starsByGroup,
-  starsFor,
-  streakMultiplier,
-  timeAttackStars,
-  type Question,
-} from './logic'
+import { parseGroups, randomQuestion, randomQuestions, starsByGroup, timeAttackStars, type Question } from './logic'
+import { seeded } from '../shared/seeded'
 import { LEVELS, OPERATIONS } from './operations'
-
-/** Deterministic pseudo-random generator for repeatable tests. */
-function seeded(seed: number) {
-  return () => {
-    seed = (seed * 1664525 + 1013904223) % 4294967296
-    return seed / 4294967296
-  }
-}
 
 const multiplication = OPERATIONS.multiplication
 const addition = OPERATIONS.addition
@@ -73,37 +54,7 @@ describe('questions', () => {
   })
 })
 
-describe('requeue', () => {
-  it('moves the first item to the end', () => {
-    expect(requeue(['a', 'b', 'c'])).toEqual(['b', 'c', 'a'])
-  })
-  it('keeps a single item', () => {
-    expect(requeue(['a'])).toEqual(['a'])
-  })
-})
-
-describe('scoring', () => {
-  it('multiplies points by streak', () => {
-    expect(streakMultiplier(1)).toBe(1)
-    expect(streakMultiplier(4)).toBe(1)
-    expect(streakMultiplier(5)).toBe(2)
-    expect(streakMultiplier(9)).toBe(2)
-    expect(streakMultiplier(10)).toBe(3)
-    expect(pointsFor(3)).toBe(10)
-    expect(pointsFor(5)).toBe(20)
-    expect(pointsFor(12)).toBe(30)
-  })
-
-  it('awards stars by first-try accuracy', () => {
-    expect(starsFor(10, 10)).toBe(3)
-    expect(starsFor(9, 10)).toBe(2)
-    expect(starsFor(8, 10)).toBe(2)
-    expect(starsFor(7, 10)).toBe(1)
-    expect(starsFor(6, 10)).toBe(1)
-    expect(starsFor(5, 10)).toBe(0)
-    expect(starsFor(0, 0)).toBe(0)
-  })
-
+describe('stars', () => {
   it('computes stars per group', () => {
     const results = [
       ...multiplication.pool(6).map((question) => ({ question, firstTry: true })),
@@ -113,11 +64,6 @@ describe('scoring', () => {
     expect(stars.get(6)).toBe(3)
     expect(stars.get(7)).toBe(1)
     expect(stars.has(8)).toBe(false)
-  })
-
-  it('keeps the best stars when merging', () => {
-    const merged = mergeStars({ 6: 3, 7: 1 }, new Map([[6, 1], [7, 2], [8, 3]] as const))
-    expect(merged).toEqual({ 6: 3, 7: 2, 8: 3 })
   })
 
   it('awards time-attack stars by correct count', () => {

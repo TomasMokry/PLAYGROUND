@@ -3,13 +3,13 @@ import { Navigate, useSearchParams } from 'react-router'
 import { playTick } from '../../lib/sound'
 import type { Stars } from '../../lib/storage'
 import { useActiveProfile } from '../../profiles/ProfileContext'
-import { GameShell } from './GameShell'
+import { GameShell } from '../shared/GameShell'
 import { parseGroups, randomQuestion, TIME_ATTACK_SECONDS, timeAttackStars } from './logic'
 import { groupLabels, type Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
-import { ResultScreen, type Stat } from './ResultScreen'
-import { recordBadges, useSaveRound } from './useSaveRound'
-import { useRound } from './useRound'
+import { ResultScreen, type Stat } from '../shared/ResultScreen'
+import { recordBadges, useSaveRound } from '../shared/useSaveRound'
+import { useRound } from '../shared/useRound'
 
 export default function TimeAttackMode({ op }: { op: Operation }) {
   const groups = parseGroups(op, useSearchParams()[0].get('g'))

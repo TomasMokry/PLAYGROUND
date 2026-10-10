@@ -8,8 +8,8 @@ export function Header() {
   return (
     <header className="mx-auto flex w-full max-w-5xl items-center justify-between gap-4 px-6 py-5">
       <Link to="/" className="flex items-center gap-2 text-2xl font-black tracking-tight text-violet-600">
-        <span className="grid size-10 place-items-center rounded-xl bg-violet-600 text-white">×</span>
-        Matika
+        <span className="grid size-10 place-items-center rounded-xl bg-violet-600 text-xl">✏️</span>
+        Škola hrou
       </Link>
       <div className="flex items-center gap-3">
         <div className="rounded-full bg-white px-4 py-2 font-bold shadow-sm" title="Hvězdy">

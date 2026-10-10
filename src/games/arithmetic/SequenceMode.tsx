@@ -1,13 +1,13 @@
 import { useState } from 'react'
 import { Navigate, useParams } from 'react-router'
 import type { Stars } from '../../lib/storage'
-import { GameShell } from './GameShell'
+import { GameShell } from '../shared/GameShell'
 import { starsByGroup, type Question } from './logic'
 import type { Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
-import { ResultScreen, type Stat } from './ResultScreen'
-import { formatDuration, recordBadges, useSaveRound } from './useSaveRound'
-import { useRound } from './useRound'
+import { ResultScreen, type Stat } from '../shared/ResultScreen'
+import { formatDuration, recordBadges, useSaveRound } from '../shared/useSaveRound'
+import { useRound } from '../shared/useRound'
 
 export default function SequenceMode({ op }: { op: Operation }) {
   const group = Number(useParams().group)

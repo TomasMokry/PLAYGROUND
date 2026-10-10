@@ -1,14 +1,14 @@
-import type { OperationId } from '../../lib/storage'
+import type { GameId } from '../../lib/storage'
 import { useProfiles } from '../../profiles/ProfileContext'
 import { applyRound, type RoundOutcome, type RoundUpdate } from './progress'
 
 /** Saves a finished round to the active profile and returns which records were broken. */
-export function useSaveRound(op: OperationId) {
+export function useSaveRound(game: GameId) {
   const { activeProfile, updateActiveProfile } = useProfiles()
   return (outcome: RoundOutcome): RoundUpdate | null => {
     if (!activeProfile) return null
-    const update = applyRound(activeProfile[op], outcome)
-    updateActiveProfile((p) => ({ ...p, [op]: applyRound(p[op], outcome).progress }))
+    const update = applyRound(activeProfile[game], outcome)
+    updateActiveProfile((p) => ({ ...p, [game]: applyRound(p[game], outcome).progress }))
     return update
   }
 }

@@ -139,7 +139,7 @@ const LEVEL_TEXT = {
 export const OPERATIONS: Record<OperationId, Operation> = {
   multiplication: {
     id: 'multiplication',
-    path: '/nasobilka',
+    path: '/matika/nasobilka',
     title: 'Násobilka',
     icon: '✖️',
     symbol: '×',
@@ -164,7 +164,7 @@ export const OPERATIONS: Record<OperationId, Operation> = {
   },
   addition: {
     id: 'addition',
-    path: '/scitani',
+    path: '/matika/scitani',
     title: 'Sčítání',
     icon: '➕',
     symbol: '+',
@@ -186,7 +186,7 @@ export const OPERATIONS: Record<OperationId, Operation> = {
   },
   subtraction: {
     id: 'subtraction',
-    path: '/odcitani',
+    path: '/matika/odcitani',
     title: 'Odčítání',
     icon: '➖',
     symbol: '−',
@@ -208,7 +208,7 @@ export const OPERATIONS: Record<OperationId, Operation> = {
   },
   division: {
     id: 'division',
-    path: '/deleni',
+    path: '/matika/deleni',
     title: 'Dělení',
     icon: '➗',
     symbol: ':',

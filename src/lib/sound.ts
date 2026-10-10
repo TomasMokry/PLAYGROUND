@@ -80,3 +80,25 @@ export function playWin() {
 export function playTick() {
   play([{ freq: 880, at: 0, duration: 0.05, type: 'square', volume: 0.05 }])
 }
+
+/** Whether this browser can read words out loud. */
+export const canSpeak = () => typeof window !== 'undefined' && 'speechSynthesis' in window
+
+/** Reads an English word out loud with the browser's speech synthesis (still no audio files). */
+export function speak(text: string) {
+  if (muted || !canSpeak()) return
+  try {
+    const synth = window.speechSynthesis
+    synth.cancel()
+    const utterance = new SpeechSynthesisUtterance(text)
+    // Czech schools teach British English; fall back to any English voice.
+    utterance.lang = 'en-GB'
+    const voices = synth.getVoices()
+    const voice = voices.find((v) => v.lang === 'en-GB') ?? voices.find((v) => v.lang.startsWith('en'))
+    if (voice) utterance.voice = voice
+    utterance.rate = 0.85
+    synth.speak(utterance)
+  } catch {
+    // Speech is a bonus; the game works without it.
+  }
+}

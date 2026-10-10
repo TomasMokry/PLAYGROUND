@@ -1,5 +1,5 @@
-import type { OperationProgress, Stars } from '../../lib/storage'
-import { mergeStars } from './logic'
+import type { GameProgress, Stars } from '../../lib/storage'
+import { mergeStars } from './rules'
 
 export interface RoundOutcome {
   points: number
@@ -11,13 +11,13 @@ export interface RoundOutcome {
 }
 
 export interface RoundUpdate {
-  progress: OperationProgress
+  progress: GameProgress
   newBestStreak: boolean
   newTimeAttackBest: boolean
 }
 
 /** Folds one finished round into the saved progress and reports any new records. */
-export function applyRound(progress: OperationProgress, outcome: RoundOutcome): RoundUpdate {
+export function applyRound(progress: GameProgress, outcome: RoundOutcome): RoundUpdate {
   const newBestStreak = outcome.bestStreak > progress.bestStreak
   const newTimeAttackBest = outcome.timeAttackScore !== undefined && outcome.timeAttackScore > progress.timeAttackBest
   return {

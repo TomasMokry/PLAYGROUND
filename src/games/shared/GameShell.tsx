@@ -2,7 +2,7 @@ import { useEffect, useState, type ReactNode } from 'react'
 import { Link } from 'react-router'
 import { MuteButton } from '../../components/MuteButton'
 import { ProgressBar } from '../../components/ProgressBar'
-import { streakMultiplier } from './logic'
+import { streakMultiplier } from './rules'
 import type { Flash } from './useRound'
 
 interface Props {

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { smallBurst } from '../../lib/confetti'
 import { playCorrect, playStreak, playWrong } from '../../lib/sound'
-import { pointsFor, randomPraise } from './logic'
+import { pointsFor, randomPraise } from './rules'
 
 export interface Flash {
   id: number
@@ -10,7 +10,7 @@ export interface Flash {
 
 const STREAK_MILESTONE = 5
 
-/** Streak, points and feedback effects shared by all arithmetic modes. */
+/** Streak, points and feedback effects shared by all game modes. */
 export function useRound() {
   const [streak, setStreak] = useState(0)
   const [bestStreak, setBestStreak] = useState(0)

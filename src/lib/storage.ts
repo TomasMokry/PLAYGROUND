@@ -1,10 +1,19 @@
 export type Stars = 0 | 1 | 2 | 3
 
+/** Math games. */
 export const OPERATION_IDS = ['multiplication', 'addition', 'subtraction', 'division'] as const
 export type OperationId = (typeof OPERATION_IDS)[number]
 
-export interface OperationProgress {
-  /** Best stars earned per group (multiplication table, difficulty level…). Missing key = 0 stars. */
+/** English games. */
+export const TOPIC_IDS = ['colors', 'numbers'] as const
+export type TopicId = (typeof TOPIC_IDS)[number]
+
+/** Every game that keeps its own progress. */
+export const GAME_IDS = [...OPERATION_IDS, ...TOPIC_IDS] as const
+export type GameId = (typeof GAME_IDS)[number]
+
+export interface GameProgress {
+  /** Best stars earned per group (multiplication table, difficulty level, English mode…). Missing key = 0 stars. */
   stars: Partial<Record<number, Stars>>
   bestStreak: number
   timeAttackBest: number
@@ -16,7 +25,7 @@ export type Profile = {
   name: string
   avatar: string
   muted: boolean
-} & Record<OperationId, OperationProgress>
+} & Record<GameId, GameProgress>
 
 export interface AppData {
   version: 1
@@ -32,12 +41,14 @@ export const emptyData = (): AppData => ({
   profiles: [],
 })
 
-export const emptyProgress = (): OperationProgress => ({
+export const emptyProgress = (): GameProgress => ({
   stars: {},
   bestStreak: 0,
   timeAttackBest: 0,
   totalPoints: 0,
 })
+
+const emptyGames = () => Object.fromEntries(GAME_IDS.map((id) => [id, emptyProgress()])) as Record<GameId, GameProgress>
 
 export function createProfile(name: string, avatar: string): Profile {
   return {
@@ -45,10 +56,7 @@ export function createProfile(name: string, avatar: string): Profile {
     name: name.trim(),
     avatar,
     muted: false,
-    multiplication: emptyProgress(),
-    addition: emptyProgress(),
-    subtraction: emptyProgress(),
-    division: emptyProgress(),
+    ...emptyGames(),
   }
 }
 
@@ -61,7 +69,7 @@ export function loadData(): AppData {
     // Fill in any fields added after the profile was first saved.
     parsed.profiles = parsed.profiles.map((p) => {
       const filled = { ...p }
-      for (const id of OPERATION_IDS) filled[id] = { ...emptyProgress(), ...p[id] }
+      for (const id of GAME_IDS) filled[id] = { ...emptyProgress(), ...p[id] }
       return filled
     })
     return parsed
@@ -78,17 +86,18 @@ export function saveData(data: AppData): void {
   }
 }
 
-export function totalStars(profile: Profile): number {
-  return OPERATION_IDS.reduce(
+/** Stars across the given games (all of them by default). */
+export function totalStars(profile: Profile, games: readonly GameId[] = GAME_IDS): number {
+  return games.reduce(
     (sum, id) => sum + Object.values(profile[id].stars).reduce<number>((s, stars) => s + (stars ?? 0), 0),
     0,
   )
 }
 
 export function totalPoints(profile: Profile): number {
-  return OPERATION_IDS.reduce((sum, id) => sum + profile[id].totalPoints, 0)
+  return GAME_IDS.reduce((sum, id) => sum + profile[id].totalPoints, 0)
 }
 
 export function bestStreak(profile: Profile): number {
-  return Math.max(...OPERATION_IDS.map((id) => profile[id].bestStreak))
+  return Math.max(...GAME_IDS.map((id) => profile[id].bestStreak))
 }

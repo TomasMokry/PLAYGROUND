@@ -1,9 +1,12 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router'
+import { BackLink } from '../../components/BackLink'
 import { Header } from '../../components/Header'
+import { ModeCard } from '../../components/ModeCard'
 import { StarRating } from '../../components/StarRating'
 import { useActiveProfile } from '../../profiles/ProfileContext'
 import { PRACTICE_COUNT, TIME_ATTACK_SECONDS } from './logic'
+import { SUBJECTS } from '../registry'
 import type { Operation } from './operations'
 
 const selectionKey = (op: Operation) => `mathkids:selectedGroups:${op.id}`
@@ -43,6 +46,7 @@ export default function OperationHome({ op }: { op: Operation }) {
     <>
       <Header />
       <main className="mx-auto w-full max-w-5xl px-6 pb-12">
+        <BackLink to={SUBJECTS.math.path}>{SUBJECTS.math.title}</BackLink>
         <h1 className="mt-4 text-4xl font-black">
           {op.title} {op.icon}
         </h1>
@@ -115,36 +119,5 @@ export default function OperationHome({ op }: { op: Operation }) {
         </section>
       </main>
     </>
-  )
-}
-
-interface ModeCardProps {
-  icon: string
-  title: string
-  description: string
-  color: string
-  extra?: string
-  disabledHint?: string
-  onPlay: () => void
-}
-
-function ModeCard({ icon, title, description, color, extra, disabledHint, onPlay }: ModeCardProps) {
-  const disabled = disabledHint !== undefined
-  return (
-    <button
-      type="button"
-      onClick={onPlay}
-      disabled={disabled}
-      className={`flex flex-col items-start rounded-3xl bg-gradient-to-br p-6 text-left text-white shadow-lg transition ${color} ${
-        disabled ? 'cursor-not-allowed opacity-45 grayscale-[40%]' : 'hover:-translate-y-1 hover:shadow-2xl active:scale-[0.98]'
-      }`}
-    >
-      <span className="text-4xl">{icon}</span>
-      <span className="mt-3 text-2xl font-black">{title}</span>
-      <span className="mt-1 font-semibold text-white/85">{description}</span>
-      <span className="mt-4 rounded-full bg-white/25 px-4 py-1.5 font-extrabold">
-        {disabled ? disabledHint : extra ? `Hrát → · ${extra}` : 'Hrát →'}
-      </span>
-    </button>
   )
 }

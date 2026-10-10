@@ -1,13 +1,14 @@
 import { useState } from 'react'
 import { Navigate, useSearchParams } from 'react-router'
-import { GameShell } from './GameShell'
-import { parseGroups, PRACTICE_COUNT, randomQuestions, requeue, starsByGroup, starsFor, type Question, type QuestionResult } from './logic'
+import { GameShell } from '../shared/GameShell'
+import { requeue, starsFor } from '../shared/rules'
+import { parseGroups, PRACTICE_COUNT, randomQuestions, starsByGroup, type Question, type QuestionResult } from './logic'
 import { groupLabels, type Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
-import { ResultScreen, type Stat } from './ResultScreen'
+import { ResultScreen, type Stat } from '../shared/ResultScreen'
 import type { Stars } from '../../lib/storage'
-import { formatDuration, recordBadges, useSaveRound } from './useSaveRound'
-import { useRound } from './useRound'
+import { formatDuration, recordBadges, useSaveRound } from '../shared/useSaveRound'
+import { useRound } from '../shared/useRound'
 
 export default function PracticeMode({ op }: { op: Operation }) {
   const groups = parseGroups(op, useSearchParams()[0].get('g'))
