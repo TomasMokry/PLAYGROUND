@@ -1,20 +1,22 @@
 export type Stars = 0 | 1 | 2 | 3
 
-export interface MultiplicationProgress {
-  /** Best stars earned per table (1–10). Missing key = 0 stars. */
+export const OPERATION_IDS = ['multiplication', 'addition', 'subtraction', 'division'] as const
+export type OperationId = (typeof OPERATION_IDS)[number]
+
+export interface OperationProgress {
+  /** Best stars earned per group (multiplication table, difficulty level…). Missing key = 0 stars. */
   stars: Partial<Record<number, Stars>>
   bestStreak: number
   timeAttackBest: number
   totalPoints: number
 }
 
-export interface Profile {
+export type Profile = {
   id: string
   name: string
   avatar: string
   muted: boolean
-  multiplication: MultiplicationProgress
-}
+} & Record<OperationId, OperationProgress>
 
 export interface AppData {
   version: 1
@@ -30,7 +32,7 @@ export const emptyData = (): AppData => ({
   profiles: [],
 })
 
-export const emptyMultiplication = (): MultiplicationProgress => ({
+export const emptyProgress = (): OperationProgress => ({
   stars: {},
   bestStreak: 0,
   timeAttackBest: 0,
@@ -43,7 +45,10 @@ export function createProfile(name: string, avatar: string): Profile {
     name: name.trim(),
     avatar,
     muted: false,
-    multiplication: emptyMultiplication(),
+    multiplication: emptyProgress(),
+    addition: emptyProgress(),
+    subtraction: emptyProgress(),
+    division: emptyProgress(),
   }
 }
 
@@ -54,10 +59,11 @@ export function loadData(): AppData {
     const parsed = JSON.parse(raw) as AppData
     if (parsed?.version !== 1 || !Array.isArray(parsed.profiles)) return emptyData()
     // Fill in any fields added after the profile was first saved.
-    parsed.profiles = parsed.profiles.map((p) => ({
-      ...p,
-      multiplication: { ...emptyMultiplication(), ...p.multiplication },
-    }))
+    parsed.profiles = parsed.profiles.map((p) => {
+      const filled = { ...p }
+      for (const id of OPERATION_IDS) filled[id] = { ...emptyProgress(), ...p[id] }
+      return filled
+    })
     return parsed
   } catch {
     return emptyData()
@@ -73,5 +79,16 @@ export function saveData(data: AppData): void {
 }
 
 export function totalStars(profile: Profile): number {
-  return Object.values(profile.multiplication.stars).reduce<number>((sum, s) => sum + (s ?? 0), 0)
+  return OPERATION_IDS.reduce(
+    (sum, id) => sum + Object.values(profile[id].stars).reduce<number>((s, stars) => s + (stars ?? 0), 0),
+    0,
+  )
+}
+
+export function totalPoints(profile: Profile): number {
+  return OPERATION_IDS.reduce((sum, id) => sum + profile[id].totalPoints, 0)
+}
+
+export function bestStreak(profile: Profile): number {
+  return Math.max(...OPERATION_IDS.map((id) => profile[id].bestStreak))
 }

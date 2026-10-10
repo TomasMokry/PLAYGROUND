@@ -10,7 +10,7 @@ export interface Flash {
 
 const STREAK_MILESTONE = 5
 
-/** Streak, points and feedback effects shared by all multiplication modes. */
+/** Streak, points and feedback effects shared by all arithmetic modes. */
 export function useRound() {
   const [streak, setStreak] = useState(0)
   const [bestStreak, setBestStreak] = useState(0)

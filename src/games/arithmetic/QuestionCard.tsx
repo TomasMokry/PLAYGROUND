@@ -1,10 +1,12 @@
 import { useEffect, useRef, useState, type FormEvent } from 'react'
 import { NumPad } from '../../components/NumPad'
 import type { Question } from './logic'
+import type { Operation } from './operations'
 
 type Status = 'idle' | 'correct' | 'wrong'
 
 interface Props {
+  op: Operation
   question: Question
   /** Called right when the answer is checked (sounds, streak, score). */
   onAnswer: (correct: boolean) => void
@@ -16,8 +18,8 @@ interface Props {
 
 const MAX_DIGITS = 3
 
-/** Shows `a × b = ?` and collects a typed answer. Remount (via `key`) for each new question. */
-export function QuestionCard({ question, onAnswer, onNext, correctDelayMs = 600, wrongDelayMs = 1800 }: Props) {
+/** Shows `a ∘ b = ?` and collects a typed answer. Remount (via `key`) for each new question. */
+export function QuestionCard({ op, question, onAnswer, onNext, correctDelayMs = 600, wrongDelayMs = 1800 }: Props) {
   const [value, setValue] = useState('')
   const [status, setStatus] = useState<Status>('idle')
   const inputRef = useRef<HTMLInputElement>(null)
@@ -53,10 +55,13 @@ export function QuestionCard({ question, onAnswer, onNext, correctDelayMs = 600,
 
   return (
     <div className="flex flex-col items-center gap-6">
-      <form onSubmit={submit} className="flex items-center gap-3 text-6xl font-black tabular-nums sm:text-7xl">
-        <span>{question.factor}</span>
-        <span className="text-violet-400">×</span>
-        <span>{question.table}</span>
+      <form
+        onSubmit={submit}
+        className={`flex items-center gap-3 font-black tabular-nums sm:text-7xl ${question.left >= 100 ? 'text-5xl' : 'text-6xl'}`}
+      >
+        <span>{question.left}</span>
+        <span className={op.style.symbol}>{op.symbol}</span>
+        <span>{question.right}</span>
         <span className="text-slate-400">=</span>
         <input
           ref={inputRef}
@@ -77,7 +82,7 @@ export function QuestionCard({ question, onAnswer, onNext, correctDelayMs = 600,
         {status === 'correct' && <span className="text-emerald-600">Správně! ✅</span>}
         {status === 'wrong' && (
           <span className="text-rose-600">
-            Skoro! Správně je {question.factor} × {question.table} = <b>{question.answer}</b>
+            Skoro! Správně je {question.left} {op.symbol} {question.right} = <b>{question.answer}</b>
           </span>
         )}
       </div>

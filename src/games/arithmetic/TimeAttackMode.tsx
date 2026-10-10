@@ -4,17 +4,18 @@ import { playTick } from '../../lib/sound'
 import type { Stars } from '../../lib/storage'
 import { useActiveProfile } from '../../profiles/ProfileContext'
 import { GameShell } from './GameShell'
-import { parseTables, randomQuestion, TIME_ATTACK_SECONDS, timeAttackStars } from './logic'
+import { parseGroups, randomQuestion, TIME_ATTACK_SECONDS, timeAttackStars } from './logic'
+import { groupLabels, type Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
 import { ResultScreen, type Stat } from './ResultScreen'
 import { recordBadges, useSaveRound } from './useSaveRound'
 import { useRound } from './useRound'
 
-export default function TimeAttackMode() {
-  const tables = parseTables(useSearchParams()[0].get('t'))
+export default function TimeAttackMode({ op }: { op: Operation }) {
+  const groups = parseGroups(op, useSearchParams()[0].get('g'))
   const [round, setRound] = useState(0)
-  if (tables.length === 0) return <Navigate to="/nasobilka" replace />
-  return <TimeAttackGame key={round} tables={tables} onAgain={() => setRound((r) => r + 1)} />
+  if (groups.length === 0) return <Navigate to={op.path} replace />
+  return <TimeAttackGame key={round} op={op} groups={groups} onAgain={() => setRound((r) => r + 1)} />
 }
 
 const DURATION_MS = TIME_ATTACK_SECONDS * 1000
@@ -28,19 +29,19 @@ interface Result {
   badges: string[]
 }
 
-function TimeAttackGame({ tables, onAgain }: { tables: number[]; onAgain: () => void }) {
+function TimeAttackGame({ op, groups, onAgain }: { op: Operation; groups: number[]; onAgain: () => void }) {
   const profile = useActiveProfile()
   const [phase, setPhase] = useState<Phase>('countdown')
   const [countdown, setCountdown] = useState(COUNTDOWN_FROM)
   const [endsAt, setEndsAt] = useState(0)
   const [remaining, setRemaining] = useState(DURATION_MS)
-  const [question, setQuestion] = useState(() => randomQuestion(tables))
+  const [question, setQuestion] = useState(() => randomQuestion(op, groups))
   const [turn, setTurn] = useState(0)
   const [correct, setCorrect] = useState(0)
   const [wrong, setWrong] = useState(0)
   const [result, setResult] = useState<Result | null>(null)
   const round = useRound()
-  const saveRound = useSaveRound()
+  const saveRound = useSaveRound(op.id)
 
   // 3, 2, 1, Start! … then start the clock.
   useEffect(() => {
@@ -105,15 +106,15 @@ function TimeAttackGame({ tables, onAgain }: { tables: number[]; onAgain: () => 
   }
 
   function next() {
-    setQuestion((q) => randomQuestion(tables, q))
+    setQuestion((q) => randomQuestion(op, groups, q))
     setTurn((t) => t + 1)
   }
 
   const seconds = Math.ceil(remaining / 1000)
   return (
     <GameShell
-      title={`Závod s časem: ${tables.map((t) => `×${t}`).join(' ')}`}
-      backTo="/nasobilka"
+      title={`Závod s časem: ${groupLabels(op, groups)}`}
+      backTo={op.path}
       progress={remaining / DURATION_MS}
       progressLabel={`${seconds} s`}
       progressColor={seconds <= 10 ? 'bg-rose-500' : 'bg-amber-400'}
@@ -123,23 +124,23 @@ function TimeAttackGame({ tables, onAgain }: { tables: number[]; onAgain: () => 
       praise={round.praise}
     >
       {result ? (
-        <ResultScreen {...result} onAgain={onAgain} backTo="/nasobilka" />
+        <ResultScreen {...result} onAgain={onAgain} backTo={op.path} />
       ) : phase === 'countdown' ? (
         <div className="flex flex-col items-center gap-4">
           <p className="text-2xl font-bold text-slate-500">Připrav se!</p>
           <div key={countdown} className="animate-pop text-9xl font-black text-amber-500">
             {countdown || 'Start!'}
           </div>
-          <p className="font-semibold text-slate-400">Tvůj rekord: {profile.multiplication.timeAttackBest}</p>
+          <p className="font-semibold text-slate-400">Tvůj rekord: {profile[op.id].timeAttackBest}</p>
         </div>
       ) : (
         <>
           <div className="mb-6 flex items-center gap-6 text-lg font-extrabold">
             <span className={`text-4xl tabular-nums ${seconds <= 10 ? 'animate-pulse text-rose-500' : 'text-amber-500'}`}>⏱️ {seconds}</span>
             <span className="text-emerald-600">✅ {correct}</span>
-            <span className="text-slate-400">Rekord: {profile.multiplication.timeAttackBest}</span>
+            <span className="text-slate-400">Rekord: {profile[op.id].timeAttackBest}</span>
           </div>
-          <QuestionCard key={turn} question={question} onAnswer={answer} onNext={next} correctDelayMs={350} wrongDelayMs={1200} />
+          <QuestionCard key={turn} op={op} question={question} onAnswer={answer} onNext={next} correctDelayMs={350} wrongDelayMs={1200} />
         </>
       )}
     </GameShell>

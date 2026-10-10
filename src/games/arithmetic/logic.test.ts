@@ -1,18 +1,18 @@
 import { describe, expect, it } from 'vitest'
 import {
-  makeQuestion,
   mergeStars,
-  parseTables,
+  parseGroups,
   pointsFor,
   randomQuestion,
   randomQuestions,
   requeue,
-  sequenceQuestions,
-  starsByTable,
+  starsByGroup,
   starsFor,
   streakMultiplier,
   timeAttackStars,
+  type Question,
 } from './logic'
+import { LEVELS, OPERATIONS } from './operations'
 
 /** Deterministic pseudo-random generator for repeatable tests. */
 function seeded(seed: number) {
@@ -22,50 +22,54 @@ function seeded(seed: number) {
   }
 }
 
-describe('questions', () => {
-  it('builds the sequence 1×t … 10×t', () => {
-    const qs = sequenceQuestions(6)
-    expect(qs).toHaveLength(10)
-    expect(qs.map((q) => q.answer)).toEqual([6, 12, 18, 24, 30, 36, 42, 48, 54, 60])
-    expect(qs.every((q) => q.table === 6)).toBe(true)
-  })
+const multiplication = OPERATIONS.multiplication
+const addition = OPERATIONS.addition
 
-  it('random questions use only selected tables, factors 1–10 and correct answers', () => {
-    const qs = randomQuestions([3, 7], 200, seeded(1))
+const same = (a: Question, b: Question) => a.left === b.left && a.right === b.right && a.group === b.group
+
+describe('questions', () => {
+  it('random questions use only selected groups and come from their pools', () => {
+    const qs = randomQuestions(multiplication, [3, 7], 200, seeded(1))
     expect(qs).toHaveLength(200)
     for (const q of qs) {
-      expect([3, 7]).toContain(q.table)
-      expect(q.factor).toBeGreaterThanOrEqual(1)
-      expect(q.factor).toBeLessThanOrEqual(10)
-      expect(q.answer).toBe(q.factor * q.table)
+      expect([3, 7]).toContain(q.group)
+      expect(q.right).toBe(q.group)
+      expect(q.left).toBeGreaterThanOrEqual(1)
+      expect(q.left).toBeLessThanOrEqual(10)
+      expect(q.answer).toBe(q.left * q.right)
     }
   })
 
   it('never repeats a question twice in a row', () => {
-    const qs = randomQuestions([2], 100, seeded(7))
-    for (let i = 1; i < qs.length; i++) {
-      expect(qs[i].factor === qs[i - 1].factor && qs[i].table === qs[i - 1].table).toBe(false)
-    }
+    const qs = randomQuestions(multiplication, [2], 100, seeded(7))
+    for (let i = 1; i < qs.length; i++) expect(same(qs[i], qs[i - 1])).toBe(false)
   })
 
   it('does not repeat questions until the pool is used up', () => {
-    const qs = randomQuestions([5], 10, seeded(3))
-    expect(new Set(qs.map((q) => q.factor)).size).toBe(10)
+    const qs = randomQuestions(multiplication, [5], 10, seeded(3))
+    expect(new Set(qs.map((q) => q.left)).size).toBe(10)
+  })
+
+  it('gives a small group its fair share next to a big one', () => {
+    // "do 20" has 100 questions, "do 1000" thousands: they should still alternate.
+    const qs = randomQuestions(addition, [LEVELS.upTo20, LEVELS.upTo1000], 20, seeded(5))
+    const small = qs.filter((q) => q.group === LEVELS.upTo20).length
+    expect(small).toBe(10)
   })
 
   it('randomQuestion differs from the previous one', () => {
     const rng = seeded(42)
-    let prev = makeQuestion(1, 1)
+    let prev = multiplication.pool(1)[0]
     for (let i = 0; i < 100; i++) {
-      const q = randomQuestion([1, 2], prev, rng)
-      expect(q.factor === prev.factor && q.table === prev.table).toBe(false)
+      const q = randomQuestion(multiplication, [1, 2], prev, rng)
+      expect(same(q, prev)).toBe(false)
       prev = q
     }
   })
 
-  it('rejects an empty table selection', () => {
-    expect(() => randomQuestions([], 5)).toThrow()
-    expect(() => randomQuestion([])).toThrow()
+  it('rejects an empty group selection', () => {
+    expect(() => randomQuestions(multiplication, [], 5)).toThrow()
+    expect(() => randomQuestion(multiplication, [])).toThrow()
   })
 })
 
@@ -100,12 +104,12 @@ describe('scoring', () => {
     expect(starsFor(0, 0)).toBe(0)
   })
 
-  it('computes stars per table', () => {
+  it('computes stars per group', () => {
     const results = [
-      ...sequenceQuestions(6).map((question) => ({ question, firstTry: true })),
-      ...sequenceQuestions(7).map((question, i) => ({ question, firstTry: i >= 3 })),
+      ...multiplication.pool(6).map((question) => ({ question, firstTry: true })),
+      ...multiplication.pool(7).map((question, i) => ({ question, firstTry: i >= 3 })),
     ]
-    const stars = starsByTable(results)
+    const stars = starsByGroup(results)
     expect(stars.get(6)).toBe(3)
     expect(stars.get(7)).toBe(1)
     expect(stars.has(8)).toBe(false)
@@ -124,9 +128,13 @@ describe('scoring', () => {
   })
 })
 
-describe('parseTables', () => {
+describe('parseGroups', () => {
   it('parses, dedupes, sorts and drops invalid values', () => {
-    expect(parseTables('7,2,7,11,x,0')).toEqual([2, 7])
-    expect(parseTables(null)).toEqual([])
+    expect(parseGroups(multiplication, '7,2,7,11,x,0')).toEqual([2, 7])
+    expect(parseGroups(multiplication, null)).toEqual([])
+  })
+
+  it('only accepts the operation’s own groups', () => {
+    expect(parseGroups(addition, '5,3,6,1')).toEqual([1, 3, 5])
   })
 })

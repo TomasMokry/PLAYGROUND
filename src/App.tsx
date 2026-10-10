@@ -1,9 +1,10 @@
-import type { ReactNode } from 'react'
+import { Fragment, type ReactNode } from 'react'
 import { HashRouter, Navigate, Route, Routes } from 'react-router'
-import MultiplicationHome from './games/multiplication/MultiplicationHome'
-import PracticeMode from './games/multiplication/PracticeMode'
-import SequenceMode from './games/multiplication/SequenceMode'
-import TimeAttackMode from './games/multiplication/TimeAttackMode'
+import OperationHome from './games/arithmetic/OperationHome'
+import { OPERATION_LIST } from './games/arithmetic/operations'
+import PracticeMode from './games/arithmetic/PracticeMode'
+import SequenceMode from './games/arithmetic/SequenceMode'
+import TimeAttackMode from './games/arithmetic/TimeAttackMode'
 import Home from './pages/Home'
 import { useProfiles } from './profiles/ProfileContext'
 import ProfilePicker from './profiles/ProfilePicker'
@@ -22,10 +23,15 @@ export default function App() {
         <Routes>
           <Route path="/profily" element={<ProfilePicker />} />
           <Route path="/" element={<RequireProfile><Home /></RequireProfile>} />
-          <Route path="/nasobilka" element={<RequireProfile><MultiplicationHome /></RequireProfile>} />
-          <Route path="/nasobilka/rada/:table" element={<RequireProfile><SequenceMode /></RequireProfile>} />
-          <Route path="/nasobilka/trenink" element={<RequireProfile><PracticeMode /></RequireProfile>} />
-          <Route path="/nasobilka/zavod" element={<RequireProfile><TimeAttackMode /></RequireProfile>} />
+          {/* Keyed by operation so state resets when switching between e.g. /scitani and /odcitani. */}
+          {OPERATION_LIST.map((op) => (
+            <Fragment key={op.id}>
+              <Route path={op.path} element={<RequireProfile><OperationHome key={op.id} op={op} /></RequireProfile>} />
+              <Route path={`${op.path}/rada/:group`} element={<RequireProfile><SequenceMode key={op.id} op={op} /></RequireProfile>} />
+              <Route path={`${op.path}/trenink`} element={<RequireProfile><PracticeMode key={op.id} op={op} /></RequireProfile>} />
+              <Route path={`${op.path}/zavod`} element={<RequireProfile><TimeAttackMode key={op.id} op={op} /></RequireProfile>} />
+            </Fragment>
+          ))}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>

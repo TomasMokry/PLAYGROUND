@@ -2,17 +2,18 @@ import { useState } from 'react'
 import { Navigate, useParams } from 'react-router'
 import type { Stars } from '../../lib/storage'
 import { GameShell } from './GameShell'
-import { sequenceQuestions, starsByTable, TABLES } from './logic'
+import { starsByGroup, type Question } from './logic'
+import type { Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
 import { ResultScreen, type Stat } from './ResultScreen'
 import { formatDuration, recordBadges, useSaveRound } from './useSaveRound'
 import { useRound } from './useRound'
 
-export default function SequenceMode() {
-  const table = Number(useParams().table)
+export default function SequenceMode({ op }: { op: Operation }) {
+  const group = Number(useParams().group)
   const [round, setRound] = useState(0)
-  if (!TABLES.includes(table as (typeof TABLES)[number])) return <Navigate to="/nasobilka" replace />
-  return <SequenceGame key={round} table={table} onAgain={() => setRound((r) => r + 1)} />
+  if (!op.sequence || !op.groups.some((g) => g.id === group)) return <Navigate to={op.path} replace />
+  return <SequenceGame key={round} op={op} sequence={op.sequence} group={group} onAgain={() => setRound((r) => r + 1)} />
 }
 
 interface Result {
@@ -21,15 +22,22 @@ interface Result {
   badges: string[]
 }
 
-function SequenceGame({ table, onAgain }: { table: number; onAgain: () => void }) {
-  const [questions] = useState(() => sequenceQuestions(table))
+interface GameProps {
+  op: Operation
+  sequence: NonNullable<Operation['sequence']>
+  group: number
+  onAgain: () => void
+}
+
+function SequenceGame({ op, sequence, group, onAgain }: GameProps) {
+  const [questions] = useState(() => sequence.questions(group))
   const [startedAt] = useState(() => Date.now())
   const [index, setIndex] = useState(0)
   const [attempt, setAttempt] = useState(0)
   const [missed, setMissed] = useState<ReadonlySet<number>>(new Set())
   const [result, setResult] = useState<Result | null>(null)
   const round = useRound()
-  const saveRound = useSaveRound()
+  const saveRound = useSaveRound(op.id)
 
   function next(correct: boolean) {
     if (!correct) {
@@ -44,10 +52,10 @@ function SequenceGame({ table, onAgain }: { table: number; onAgain: () => void }
       return
     }
     const results = questions.map((question, i) => ({ question, firstTry: !missed.has(i) }))
-    const earnedStars = starsByTable(results)
+    const earnedStars = starsByGroup(results)
     const update = saveRound({ points: round.points, bestStreak: round.bestStreak, earnedStars })
     setResult({
-      stars: earnedStars.get(table) ?? 0,
+      stars: earnedStars.get(group) ?? 0,
       badges: recordBadges(update),
       stats: [
         { label: 'Napoprvé správně', value: `${questions.length - missed.size} / ${questions.length}` },
@@ -61,8 +69,8 @@ function SequenceGame({ table, onAgain }: { table: number; onAgain: () => void }
   const done = result !== null
   return (
     <GameShell
-      title={`Řada násobilky ${table}`}
-      backTo="/nasobilka"
+      title={sequence.title(group)}
+      backTo={op.path}
       progress={done ? 1 : index / questions.length}
       progressLabel={`${done ? questions.length : index} / ${questions.length}`}
       streak={round.streak}
@@ -71,19 +79,26 @@ function SequenceGame({ table, onAgain }: { table: number; onAgain: () => void }
       praise={round.praise}
     >
       {result ? (
-        <ResultScreen {...result} onAgain={onAgain} backTo="/nasobilka" />
+        <ResultScreen {...result} onAgain={onAgain} backTo={op.path} />
       ) : (
         <div className="grid w-full items-center gap-8 md:grid-cols-[14rem_1fr]">
-          <Ladder questions={questions} index={index} missed={missed} />
-          <QuestionCard key={`${index}-${attempt}`} question={questions[index]} onAnswer={round.register} onNext={next} />
+          <Ladder op={op} questions={questions} index={index} missed={missed} />
+          <QuestionCard key={`${index}-${attempt}`} op={op} question={questions[index]} onAnswer={round.register} onNext={next} />
         </div>
       )}
     </GameShell>
   )
 }
 
-/** The growing list 1 × t = t, 2 × t = 2t, … so the pattern of the table is visible. */
-function Ladder({ questions, index, missed }: { questions: ReturnType<typeof sequenceQuestions>; index: number; missed: ReadonlySet<number> }) {
+interface LadderProps {
+  op: Operation
+  questions: readonly Question[]
+  index: number
+  missed: ReadonlySet<number>
+}
+
+/** The growing list (1 × t, 2 × t … or t : t, 2t : t …) so the pattern of the table is visible. */
+function Ladder({ op, questions, index, missed }: LadderProps) {
   return (
     <ol className="flex flex-col gap-1 rounded-3xl bg-white p-4 text-lg font-bold tabular-nums shadow-sm">
       {questions.map((q, i) => {
@@ -97,7 +112,7 @@ function Ladder({ questions, index, missed }: { questions: ReturnType<typeof seq
         return (
           <li key={i} className={`flex justify-between rounded-xl px-3 py-0.5 transition ${style}`}>
             <span>
-              {q.factor} × {q.table} =
+              {q.left} {op.symbol} {q.right} =
             </span>
             <span>{i < index ? q.answer : i === index ? '?' : '…'}</span>
           </li>

@@ -1,12 +1,11 @@
 import { Link } from 'react-router'
 import { Header } from '../components/Header'
 import { GAMES, type GameInfo } from '../games/registry'
-import { totalStars } from '../lib/storage'
+import { bestStreak, totalPoints, totalStars } from '../lib/storage'
 import { useActiveProfile } from '../profiles/ProfileContext'
 
 export default function Home() {
   const profile = useActiveProfile()
-  const m = profile.multiplication
   return (
     <>
       <Header />
@@ -20,8 +19,8 @@ export default function Home() {
           </div>
           <div className="flex gap-3">
             <StatPill icon="★" iconClass="text-amber-400" label="Hvězdy" value={totalStars(profile)} />
-            <StatPill icon="⭐" label="Body" value={m.totalPoints} />
-            <StatPill icon="🔥" label="Série" value={m.bestStreak} />
+            <StatPill icon="⭐" label="Body" value={totalPoints(profile)} />
+            <StatPill icon="🔥" label="Série" value={bestStreak(profile)} />
           </div>
         </section>
 

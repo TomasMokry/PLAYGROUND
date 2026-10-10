@@ -1,3 +1,5 @@
+import { OPERATIONS } from './arithmetic/operations'
+
 export interface GameInfo {
   id: string
   title: string
@@ -13,31 +15,34 @@ export interface GameInfo {
 export const GAMES: GameInfo[] = [
   {
     id: 'multiplication',
-    title: 'Násobilka',
+    title: OPERATIONS.multiplication.title,
     description: 'Řady, trénink a závod s časem',
-    icon: '✖️',
+    icon: OPERATIONS.multiplication.icon,
     gradient: 'from-violet-500 to-fuchsia-500',
-    path: '/nasobilka',
+    path: OPERATIONS.multiplication.path,
   },
   {
     id: 'addition',
-    title: 'Sčítání',
-    description: 'Sčítej rychle a přesně',
-    icon: '➕',
+    title: OPERATIONS.addition.title,
+    description: 'Do 20, do 100 i do 1000',
+    icon: OPERATIONS.addition.icon,
     gradient: 'from-emerald-400 to-teal-500',
+    path: OPERATIONS.addition.path,
   },
   {
     id: 'subtraction',
-    title: 'Odčítání',
-    description: 'Kolik zbyde?',
-    icon: '➖',
+    title: OPERATIONS.subtraction.title,
+    description: 'Kolik zbyde? Do 20, do 100 i do 1000',
+    icon: OPERATIONS.subtraction.icon,
     gradient: 'from-sky-400 to-blue-500',
+    path: OPERATIONS.subtraction.path,
   },
   {
     id: 'division',
-    title: 'Dělení',
-    description: 'Rozděl spravedlivě',
-    icon: '➗',
+    title: OPERATIONS.division.title,
+    description: 'Rozděl spravedlivě: násobilka pozpátku',
+    icon: OPERATIONS.division.icon,
     gradient: 'from-amber-400 to-orange-500',
+    path: OPERATIONS.division.path,
   },
 ]

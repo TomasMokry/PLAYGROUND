@@ -1,13 +1,14 @@
+import type { OperationId } from '../../lib/storage'
 import { useProfiles } from '../../profiles/ProfileContext'
 import { applyRound, type RoundOutcome, type RoundUpdate } from './progress'
 
 /** Saves a finished round to the active profile and returns which records were broken. */
-export function useSaveRound() {
+export function useSaveRound(op: OperationId) {
   const { activeProfile, updateActiveProfile } = useProfiles()
   return (outcome: RoundOutcome): RoundUpdate | null => {
     if (!activeProfile) return null
-    const update = applyRound(activeProfile.multiplication, outcome)
-    updateActiveProfile((p) => ({ ...p, multiplication: applyRound(p.multiplication, outcome).progress }))
+    const update = applyRound(activeProfile[op], outcome)
+    updateActiveProfile((p) => ({ ...p, [op]: applyRound(p[op], outcome).progress }))
     return update
   }
 }

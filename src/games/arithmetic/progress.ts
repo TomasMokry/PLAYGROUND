@@ -1,23 +1,23 @@
-import type { MultiplicationProgress, Stars } from '../../lib/storage'
+import type { OperationProgress, Stars } from '../../lib/storage'
 import { mergeStars } from './logic'
 
 export interface RoundOutcome {
   points: number
   bestStreak: number
-  /** Stars earned per table in this round (not used by time attack). */
+  /** Stars earned per group in this round (not used by time attack). */
   earnedStars?: Map<number, Stars>
   /** Correct answers in a time-attack round. */
   timeAttackScore?: number
 }
 
 export interface RoundUpdate {
-  progress: MultiplicationProgress
+  progress: OperationProgress
   newBestStreak: boolean
   newTimeAttackBest: boolean
 }
 
 /** Folds one finished round into the saved progress and reports any new records. */
-export function applyRound(progress: MultiplicationProgress, outcome: RoundOutcome): RoundUpdate {
+export function applyRound(progress: OperationProgress, outcome: RoundOutcome): RoundUpdate {
   const newBestStreak = outcome.bestStreak > progress.bestStreak
   const newTimeAttackBest = outcome.timeAttackScore !== undefined && outcome.timeAttackScore > progress.timeAttackBest
   return {
