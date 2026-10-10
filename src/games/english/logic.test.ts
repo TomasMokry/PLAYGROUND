@@ -49,11 +49,13 @@ describe('choice questions', () => {
     }
   })
 
-  it('a round mixes both directions and every question has its answer among the options', () => {
-    const round = choiceRound(numbers, ROUND_COUNT, seeded(3))
-    expect(round).toHaveLength(ROUND_COUNT)
-    expect(new Set(round.map((q) => q.direction))).toEqual(new Set(['toEnglish', 'fromEnglish']))
-    for (const q of round) expect(q.options).toContain(q.word)
+  it('a round asks every question the same way, with its answer among the options', () => {
+    for (const direction of ['toEnglish', 'fromEnglish'] as const) {
+      const round = choiceRound(numbers, direction, ROUND_COUNT, seeded(3))
+      expect(round).toHaveLength(ROUND_COUNT)
+      expect(round.every((q) => q.direction === direction)).toBe(true)
+      for (const q of round) expect(q.options).toContain(q.word)
+    }
   })
 })
 

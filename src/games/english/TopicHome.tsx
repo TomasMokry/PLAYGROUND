@@ -7,7 +7,7 @@ import type { Stars } from '../../lib/storage'
 import { useActiveProfile } from '../../profiles/ProfileContext'
 import { SUBJECTS } from '../registry'
 import { ROUND_COUNT } from './logic'
-import { MODES, type Topic } from './topics'
+import { CHOOSE_TITLE, MODES, WRITE_TITLE, type Topic } from './topics'
 import { WordPicture } from './WordPicture'
 
 const starText = (stars: Stars) => '★'.repeat(stars) + '☆'.repeat(3 - stars)
@@ -30,18 +30,26 @@ export default function TopicHome({ topic }: { topic: Topic }) {
         </p>
 
         <h2 className="mt-8 text-xl font-extrabold">Vyber hru</h2>
-        <section className="mt-4 grid gap-5 md:grid-cols-2">
+        <section className="mt-4 grid gap-5 md:grid-cols-3">
           <ModeCard
             icon="🎯"
-            title="Vyber"
+            title={CHOOSE_TITLE}
             description={`${topic.text.choose} ${ROUND_COUNT} otázek.`}
             color="from-sky-500 to-blue-600"
             extra={starText(progress.stars[MODES.choose] ?? 0)}
             onPlay={() => navigate(`${topic.path}/vyber`)}
           />
           <ModeCard
+            icon="👂"
+            title={topic.text.findTitle}
+            description={`${topic.text.find} ${ROUND_COUNT} otázek.`}
+            color="from-emerald-500 to-teal-600"
+            extra={starText(progress.stars[MODES.find] ?? 0)}
+            onPlay={() => navigate(`${topic.path}/najdi`)}
+          />
+          <ModeCard
             icon="✍️"
-            title="Napiš"
+            title={WRITE_TITLE}
             description={`${topic.text.write} ${ROUND_COUNT} slov.`}
             color="from-pink-500 to-rose-500"
             extra={starText(progress.stars[MODES.write] ?? 0)}

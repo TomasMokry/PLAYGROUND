@@ -8,8 +8,8 @@ export const OPTION_COUNT = 4
 export const MAX_LETTERS = 12
 
 /**
- * `toEnglish`: show the picture, pick the English word.
- * `fromEnglish`: show (and say) the English word, pick the picture.
+ * `toEnglish`: show the picture, pick the English word (mode "Jak se to řekne?").
+ * `fromEnglish`: show (and say) the English word, pick the picture (mode "Najdi").
  */
 export type Direction = 'toEnglish' | 'fromEnglish'
 
@@ -45,10 +45,11 @@ export function choiceOptions(words: readonly Word[], target: Word, count = OPTI
   return shuffle([target, ...others], rng)
 }
 
-export function choiceRound(words: readonly Word[], count = ROUND_COUNT, rng: Rng = Math.random): ChoiceQuestion[] {
+/** A round of multiple-choice questions, all asked the same way. */
+export function choiceRound(words: readonly Word[], direction: Direction, count = ROUND_COUNT, rng: Rng = Math.random): ChoiceQuestion[] {
   return roundWords(words, count, rng).map((word) => ({
     word,
-    direction: rng() < 0.5 ? 'toEnglish' : 'fromEnglish',
+    direction,
     options: choiceOptions(words, word, OPTION_COUNT, rng),
   }))
 }

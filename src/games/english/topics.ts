@@ -22,8 +22,13 @@ export interface NumberWord extends BaseWord {
 
 export type Word = ColorWord | NumberWord
 
-/** Game modes of a topic. Stars are saved per mode id. */
-export const MODES = { choose: 1, write: 2 } as const
+/**
+ * Game modes of a topic. Stars are saved per mode id, so ids never change.
+ * `choose`: see the picture, pick the English word ("Jak se to řekne?").
+ * `find`: see and hear the English word, pick the picture ("Najdi barvu").
+ * `write`: see the picture, type the English word ("Napiš").
+ */
+export const MODES = { choose: 1, write: 2, find: 3 } as const
 export type ModeId = (typeof MODES)[keyof typeof MODES]
 
 export interface Topic {
@@ -35,8 +40,11 @@ export interface Topic {
   text: {
     /** Mode card descriptions. */
     choose: string
+    find: string
     write: string
-    /** "Která barva je" + word: the question when the English word is shown. */
+    /** Title of the `find` mode, e.g. "Najdi barvu". */
+    findTitle: string
+    /** "Která barva je" + word: the question in the `find` mode. */
     whichIs: string
   }
 }
@@ -78,8 +86,10 @@ export const TOPICS: Record<TopicId, Topic> = {
     icon: '🎨',
     words: COLORS,
     text: {
-      choose: 'Poznej barvu a vyber, jak se řekne anglicky.',
+      choose: 'Podívej se na barvu a vyber, jak se řekne anglicky.',
+      find: 'Poslechni si anglické slovo a najdi správnou barvu.',
       write: 'Podívej se na barvu a napiš ji anglicky.',
+      findTitle: 'Najdi barvu',
       whichIs: 'Která barva je',
     },
   },
@@ -90,11 +100,22 @@ export const TOPICS: Record<TopicId, Topic> = {
     icon: '🔢',
     words: NUMBERS,
     text: {
-      choose: 'Spoj číslo s anglickým slovem.',
+      choose: 'Podívej se na číslo a vyber, jak se řekne anglicky.',
+      find: 'Poslechni si anglické slovo a najdi správné číslo.',
       write: 'Podívej se na číslo a napiš ho anglicky.',
+      findTitle: 'Najdi číslo',
       whichIs: 'Které číslo je',
     },
   },
 }
 
 export const TOPIC_LIST = Object.values(TOPICS)
+
+export const CHOOSE_TITLE = 'Jak se to řekne?'
+export const WRITE_TITLE = 'Napiš'
+
+export function modeTitle(topic: Topic, mode: ModeId): string {
+  if (mode === MODES.choose) return CHOOSE_TITLE
+  if (mode === MODES.find) return topic.text.findTitle
+  return WRITE_TITLE
+}

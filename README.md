@@ -31,7 +31,8 @@ npm run lint       # oxlint
 ### Angličtina
 
 - **Barvy** (red, blue, green, yellow, orange, purple, pink, brown, black, white, grey) and **Čísla 1–10** (one … ten).
-- **Vyber:** 10 multiple-choice questions. Half the time the child sees the picture (a color swatch, or a number with dots to count) and picks the English word. The other half they see and hear the English word and pick the picture.
+- **Jak se to řekne?** (`/vyber`): 10 multiple-choice questions. The child sees the picture (a color swatch, or a number with dots to count) and picks the English word.
+- **Najdi barvu / Najdi číslo** (`/najdi`): 10 multiple-choice questions the other way round. The child sees and hears the English word and picks the picture.
 - **Napiš:** 10 words to type in English, with an on-screen keyboard. It shows the letter count, and **💡 Nápověda** fills in the next letter, but then the word doesn't count towards stars. Capitals are ignored, and "gray" counts as well as "grey".
 - **Slovníček:** the word list on each topic page. Click a word to hear it.
 - Words are read out loud in British English with the browser's built-in speech synthesis (no audio files). It respects the mute button, and the 🔊 buttons hide where speech isn't available.
@@ -43,7 +44,7 @@ npm run lint       # oxlint
 |---|---|
 | Points | 10 per correct answer, ×2 from a 5-answer streak, ×3 from a 10-answer streak |
 | Streak milestones | every 5 correct in a row: confetti, sound and praise |
-| Stars per table / level / mode (Řada, Trénink, Vyber, Napiš) | based on that table's, level's or mode's questions answered right **on the first try**: 100% = ★★★, ≥80% = ★★, ≥60% = ★. The best result is kept. |
+| Stars per table / level / mode (Řada, Trénink, Jak se to řekne?, Najdi, Napiš) | based on that table's, level's or mode's questions answered right **on the first try**: 100% = ★★★, ≥80% = ★★, ≥60% = ★. The best result is kept. |
 | Time-attack stars | 10 correct = ★, 20 = ★★, 30 = ★★★ (shown only, not saved per table) |
 | Records | longest streak and best time-attack score per game, with "Nový rekord!" when beaten. The home page shows totals across all games. |
 
@@ -76,7 +77,7 @@ src/
     topics.ts                  word lists (colors, numbers) and topic texts + tests
     logic.ts                   rounds, answer options, spelling check, hints + tests
     TopicHome.tsx              mode cards + Slovníček
-    EnglishMode.tsx            one round of Vyber or Napiš
+    EnglishMode.tsx            one round of any English mode
     ChoiceCard.tsx / SpellingCard.tsx / WordPicture.tsx / SpeakButton.tsx
   profiles/                    profile context, provider, picker
   components/                  Header, BackLink, GamePanel, ModeCard, StarRating, NumPad, LetterPad, ProgressBar, MuteButton

@@ -44,6 +44,7 @@ export default function App() {
             <Fragment key={topic.id}>
               <Route path={topic.path} element={<RequireProfile><TopicHome key={topic.id} topic={topic} /></RequireProfile>} />
               <Route path={`${topic.path}/vyber`} element={<RequireProfile><EnglishMode key={`${topic.id}-choose`} topic={topic} mode={MODES.choose} /></RequireProfile>} />
+              <Route path={`${topic.path}/najdi`} element={<RequireProfile><EnglishMode key={`${topic.id}-find`} topic={topic} mode={MODES.find} /></RequireProfile>} />
               <Route path={`${topic.path}/napis`} element={<RequireProfile><EnglishMode key={`${topic.id}-write`} topic={topic} mode={MODES.write} /></RequireProfile>} />
             </Fragment>
           ))}

@@ -8,7 +8,7 @@ import { formatDuration, recordBadges, useSaveRound } from '../shared/useSaveRou
 import { ChoiceCard } from './ChoiceCard'
 import { choiceRound, roundWords, ROUND_COUNT, type ChoiceQuestion } from './logic'
 import { SpellingCard } from './SpellingCard'
-import { MODES, type ModeId, type Topic, type Word } from './topics'
+import { modeTitle, MODES, type ModeId, type Topic, type Word } from './topics'
 
 export default function EnglishMode({ topic, mode }: { topic: Topic; mode: ModeId }) {
   const [round, setRound] = useState(0)
@@ -17,7 +17,7 @@ export default function EnglishMode({ topic, mode }: { topic: Topic; mode: ModeI
 
 interface QueueItem {
   word: Word
-  /** Only in the "Vyber" mode. */
+  /** Only in the multiple-choice modes. */
   choice?: ChoiceQuestion
   missed: boolean
 }
@@ -28,10 +28,16 @@ interface Result {
   badges: string[]
 }
 
+const PROGRESS_COLORS: Record<ModeId, string> = {
+  [MODES.choose]: 'bg-sky-500',
+  [MODES.find]: 'bg-emerald-500',
+  [MODES.write]: 'bg-pink-500',
+}
+
 function newQueue(topic: Topic, mode: ModeId): QueueItem[] {
-  return mode === MODES.choose
-    ? choiceRound(topic.words).map((choice) => ({ word: choice.word, choice, missed: false }))
-    : roundWords(topic.words, ROUND_COUNT).map((word) => ({ word, missed: false }))
+  if (mode === MODES.write) return roundWords(topic.words, ROUND_COUNT).map((word) => ({ word, missed: false }))
+  const direction = mode === MODES.choose ? 'toEnglish' : 'fromEnglish'
+  return choiceRound(topic.words, direction).map((choice) => ({ word: choice.word, choice, missed: false }))
 }
 
 function EnglishGame({ topic, mode, onAgain }: { topic: Topic; mode: ModeId; onAgain: () => void }) {
@@ -76,11 +82,11 @@ function EnglishGame({ topic, mode, onAgain }: { topic: Topic; mode: ModeId; onA
   const current = queue[0]
   return (
     <GameShell
-      title={`${topic.title}: ${mode === MODES.choose ? 'Vyber' : 'Napiš'}`}
+      title={`${topic.title}: ${modeTitle(topic, mode)}`}
       backTo={topic.path}
       progress={done / ROUND_COUNT}
       progressLabel={`${done} / ${ROUND_COUNT}`}
-      progressColor={mode === MODES.choose ? 'bg-sky-500' : 'bg-pink-500'}
+      progressColor={PROGRESS_COLORS[mode]}
       streak={round.streak}
       points={round.points}
       gain={round.gain}
