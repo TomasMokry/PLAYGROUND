@@ -1,6 +1,6 @@
 import type { Stars } from '../../lib/storage'
 import { pick, starsFor, type Rng } from '../shared/rules'
-import type { Operation } from './operations'
+import { playableGroups, type Operation } from './operations'
 
 export const PRACTICE_COUNT = 15
 export const TIME_ATTACK_SECONDS = 60
@@ -80,9 +80,9 @@ export function timeAttackStars(correct: number): Stars {
   return 0
 }
 
-/** Parses `?g=2,6,7` into a sorted list of the operation's valid groups. */
+/** Parses `?g=2,6,7` into a sorted list of the operation's playable groups. */
 export function parseGroups(op: Operation, param: string | null): number[] {
   if (!param) return []
-  const valid = new Set(op.groups.map((g) => g.id))
+  const valid = new Set(playableGroups(op).map((g) => g.id))
   return [...new Set(param.split(',').map(Number))].filter((n) => valid.has(n)).sort((a, b) => a - b)
 }

@@ -76,11 +76,16 @@ describe('stars', () => {
 
 describe('parseGroups', () => {
   it('parses, dedupes, sorts and drops invalid values', () => {
-    expect(parseGroups(multiplication, '7,2,7,11,x,0')).toEqual([2, 7])
+    expect(parseGroups(multiplication, '9,7,9,11,x,0')).toEqual([7, 9])
     expect(parseGroups(multiplication, null)).toEqual([])
   })
 
   it('only accepts the operation’s own groups', () => {
     expect(parseGroups(addition, '5,3,6,1')).toEqual([1, 3, 5])
+  })
+
+  it('drops disabled groups', () => {
+    const disabled = multiplication.groups.filter((g) => g.disabled).map((g) => g.id)
+    expect(parseGroups(multiplication, disabled.join(','))).toEqual([])
   })
 })

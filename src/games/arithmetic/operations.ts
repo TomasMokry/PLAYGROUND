@@ -8,6 +8,8 @@ export interface Group {
   label: string
   /** Sample problem shown under the label, for levels that need one. */
   example?: string
+  /** Shown greyed out and can't be picked or played. */
+  disabled?: boolean
 }
 
 export interface Operation {
@@ -69,7 +71,11 @@ function pairs(lefts: number[], rights: number[], keep: (a: number, b: number) =
 const ones = (n: number) => n % 10
 const isRound = (n: number) => n % 10 === 0
 
-const TABLE_GROUPS = (symbol: string): Group[] => ONE_TO_TEN.map((t) => ({ id: t, label: `${symbol}${t}` }))
+/** Tables up to this one are switched off for now (too easy). Set to 0 to bring them back. */
+const DISABLED_TABLES_UP_TO = 5
+
+const TABLE_GROUPS = (symbol: string): Group[] =>
+  ONE_TO_TEN.map((t) => ({ id: t, label: `${symbol}${t}`, disabled: t <= DISABLED_TABLES_UP_TO }))
 
 const TABLE_STYLE = { chipGrid: 'grid-cols-5', chipLabel: 'text-3xl' }
 const LEVEL_STYLE = { chipGrid: 'grid-cols-2 sm:grid-cols-3 lg:grid-cols-5', chipLabel: 'text-2xl' }
@@ -234,6 +240,11 @@ export const OPERATIONS: Record<OperationId, Operation> = {
 }
 
 export const OPERATION_LIST = Object.values(OPERATIONS)
+
+/** Groups that can be picked and played (not disabled). */
+export function playableGroups(op: Operation): Group[] {
+  return op.groups.filter((g) => !g.disabled)
+}
 
 /** "×3, ×7" or "do 20, do 100" for screen titles. */
 export function groupLabels(op: Operation, groups: readonly number[]): string {

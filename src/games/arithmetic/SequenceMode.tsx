@@ -3,7 +3,7 @@ import { Navigate, useParams } from 'react-router'
 import type { Stars } from '../../lib/storage'
 import { GameShell } from '../shared/GameShell'
 import { starsByGroup, type Question } from './logic'
-import type { Operation } from './operations'
+import { playableGroups, type Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
 import { ResultScreen, type Stat } from '../shared/ResultScreen'
 import { exerciseKey, type RewardOutcome } from '../shared/reward'
@@ -13,7 +13,7 @@ import { useRound } from '../shared/useRound'
 export default function SequenceMode({ op }: { op: Operation }) {
   const group = Number(useParams().group)
   const [round, setRound] = useState(0)
-  if (!op.sequence || !op.groups.some((g) => g.id === group)) return <Navigate to={op.path} replace />
+  if (!op.sequence || !playableGroups(op).some((g) => g.id === group)) return <Navigate to={op.path} replace />
   return <SequenceGame key={round} op={op} sequence={op.sequence} group={group} onAgain={() => setRound((r) => r + 1)} />
 }
 

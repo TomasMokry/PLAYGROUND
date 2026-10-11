@@ -7,14 +7,14 @@ import { StarRating } from '../../components/StarRating'
 import { useActiveProfile } from '../../profiles/ProfileContext'
 import { PRACTICE_COUNT, TIME_ATTACK_SECONDS } from './logic'
 import { SUBJECTS } from '../registry'
-import type { Operation } from './operations'
+import { playableGroups, type Operation } from './operations'
 
 const selectionKey = (op: Operation) => `mathkids:selectedGroups:${op.id}`
 
 function loadSelection(op: Operation): number[] {
   try {
     const saved = JSON.parse(sessionStorage.getItem(selectionKey(op)) ?? '[]')
-    const valid = new Set(op.groups.map((g) => g.id))
+    const valid = new Set(playableGroups(op).map((g) => g.id))
     return Array.isArray(saved) ? saved.filter((n) => valid.has(n)) : []
   } catch {
     return []
@@ -37,7 +37,8 @@ export default function OperationHome({ op }: { op: Operation }) {
   }
 
   const toggle = (g: number) => changeSelection(selected.includes(g) ? selected.filter((s) => s !== g) : [...selected, g])
-  const allSelected = selected.length === op.groups.length
+  const playable = playableGroups(op)
+  const allSelected = selected.length === playable.length
   const query = `?g=${selected.join(',')}`
   const progress = profile[op.id]
   const { sequence, style, text } = op
@@ -59,7 +60,7 @@ export default function OperationHome({ op }: { op: Operation }) {
             <h2 className="text-xl font-extrabold">1. {text.pickGroups}</h2>
             <button
               type="button"
-              onClick={() => changeSelection(allSelected ? [] : op.groups.map((g) => g.id))}
+              onClick={() => changeSelection(allSelected ? [] : playable.map((g) => g.id))}
               className={`shrink-0 rounded-full px-4 py-1.5 font-bold transition ${style.soft}`}
             >
               {allSelected ? 'Zrušit výběr' : 'Vybrat vše'}
@@ -73,9 +74,14 @@ export default function OperationHome({ op }: { op: Operation }) {
                   key={g.id}
                   type="button"
                   onClick={() => toggle(g.id)}
+                  disabled={g.disabled}
                   aria-pressed={on}
-                  className={`flex flex-col items-center gap-1 rounded-2xl border-4 py-3 transition hover:-translate-y-0.5 active:scale-95 ${
-                    on ? style.chipOn : 'border-transparent bg-white shadow-sm'
+                  className={`flex flex-col items-center gap-1 rounded-2xl border-4 py-3 transition ${
+                    g.disabled
+                      ? 'cursor-not-allowed border-transparent bg-white opacity-40'
+                      : on
+                        ? `hover:-translate-y-0.5 active:scale-95 ${style.chipOn}`
+                        : 'border-transparent bg-white shadow-sm hover:-translate-y-0.5 active:scale-95'
                   }`}
                 >
                   <span className={`font-black ${style.chipLabel}`}>{g.label}</span>
