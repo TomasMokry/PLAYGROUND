@@ -102,6 +102,14 @@ export const SUBJECTS = {
         gradient: 'from-indigo-500 to-purple-600',
         path: '/tetris',
       },
+      {
+        id: 'tictactoe',
+        title: 'Piškvorky',
+        description: 'Křížky a kolečka 3 × 3 proti počítači nebo kamarádovi',
+        icon: '⭕',
+        gradient: 'from-sky-500 to-cyan-500',
+        path: '/piskvorky',
+      },
     ],
   },
 } satisfies Record<Subject['id'], Subject>

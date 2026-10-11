@@ -45,6 +45,9 @@ npm run lint       # oxlint
   - Score: 100 / 300 / 500 / 800 × level for 1–4 lines at once, plus 1 per row of soft drop and 2 per row of hard drop. The level goes up every 10 lines and the pieces fall faster. Clearing 4 lines at once ("TETRIS!") sets off confetti.
   - Stars by lines cleared in one game: 5 = ★, 20 = ★★, 40 = ★★★ (best kept). The best score is saved as the record. Tetris score does not count towards the learning points (Body) on the home page.
 
+- **Piškvorky** (`/piskvorky`): tic tac toe on a 3 × 3 board. Pick an opponent: the computer at **Lehká** (plays at random, but takes a win it sees), **Střední** (also blocks and takes the middle), **Těžká** (plays perfectly, so a draw is the best result), or **Dva hráči** on one device. Who starts swaps every game, and the score of the session is shown.
+  - Stars against the computer (best kept): beat Lehká = ★, beat Střední = ★★, draw or win against Těžká = ★★★.
+
 ### Gamification rules
 
 | What | Rule |
@@ -83,6 +86,9 @@ src/
   games/tetris/                Zábava: Tetris
     logic.ts                   board, pieces, moves, line clears, scoring (pure reducer) + tests
     TetrisGame.tsx             board, side panel, keyboard + touch controls
+  games/tictactoe/             Zábava: Piškvorky
+    logic.ts                   board, winner, computer player (incl. minimax), stars + tests
+    TicTacToeGame.tsx          opponent picker + board
   games/english/               Angličtina
     topics.ts                  word lists (colors, numbers) and topic texts + tests
     logic.ts                   rounds, answer options, spelling check, hints + tests

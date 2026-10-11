@@ -10,6 +10,7 @@ import TopicHome from './games/english/TopicHome'
 import { MODES, TOPIC_LIST } from './games/english/topics'
 import { SUBJECT_LIST } from './games/registry'
 import TetrisMode from './games/tetris/TetrisGame'
+import TicTacToeMode from './games/tictactoe/TicTacToeGame'
 import Home from './pages/Home'
 import SubjectHome from './pages/SubjectHome'
 import { useProfiles } from './profiles/ProfileContext'
@@ -50,6 +51,7 @@ export default function App() {
             </Fragment>
           ))}
           <Route path="/tetris" element={<RequireProfile><TetrisMode /></RequireProfile>} />
+          <Route path="/piskvorky" element={<RequireProfile><TicTacToeMode /></RequireProfile>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>
