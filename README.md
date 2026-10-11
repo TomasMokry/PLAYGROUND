@@ -54,6 +54,16 @@ npm run lint       # oxlint
 - **Pexeso** (`/pexeso`): the memory card game. Pick pictures (**Zvířátka**, **Jídlo**, **Doprava**), alone or **Dva hráči**, and a size: **Malé** (6 pairs), **Střední** (8), **Velké** (12). Cards flip in 3D; a missed pair stays face up for a second. With two players a found pair earns another turn and a miss passes it on; whoever finds more pairs wins.
   - Stars when playing alone, per size, by moves per pair: ≤ 1.75 = ★★★, ≤ 2.5 = ★★, ≤ 3.5 = ★ (best kept). Two-player games are not saved.
 
+### Čas na hraní (play time)
+
+The Zábava games are a reward. They are locked until the child earns play time:
+
+- A learning round **without a mistake** adds **10 minutes** to the player's bank. That means every answer right on the first try in Řada, Trénink, Jak se to řekne?, Najdi and Napiš (no Nápověda). In Závod s časem it means no mistake and at least 20 correct.
+- The bank holds at most **30 minutes**.
+- The same exercise (game + mode + selected tables/levels) pays **once a day**, so repeating the easiest one doesn't help.
+- Time counts down only while a fun game runs: not while the tab is hidden, and not on the Tetris/Dino start, pause or game-over screens. A pill in the corner shows what's left, with a warning one minute before the end. When it runs out, the game ends and the child is sent back to practice.
+- The result screen of a learning round says what was earned (or why not). The Zábava page shows the bank or how to unlock it.
+
 ### Gamification rules
 
 | What | Rule |
@@ -83,6 +93,9 @@ src/
     ResultScreen.tsx           stars, stats, confetti
     useRound.ts                streak/points/praise state for one round
     useSaveRound.ts            saves a round to the active profile's progress for that game
+    reward.ts                  play time: perfect rounds, bank, once a day per exercise + tests
+    PlayTimeGate.tsx           guards the fun games, counts the bank down, time-up screen
+    playClock.ts               lets a fun game pause the play clock
   games/arithmetic/            Matematika: shared engine for ×, +, − and :
     operations.ts              each operation: groups (tables/levels), question pools, texts, colors + tests
     logic.ts                   picking questions, stars per group + tests

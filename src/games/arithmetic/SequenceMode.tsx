@@ -6,6 +6,7 @@ import { starsByGroup, type Question } from './logic'
 import type { Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
 import { ResultScreen, type Stat } from '../shared/ResultScreen'
+import { exerciseKey, type RewardOutcome } from '../shared/reward'
 import { formatDuration, recordBadges, useSaveRound } from '../shared/useSaveRound'
 import { useRound } from '../shared/useRound'
 
@@ -20,6 +21,7 @@ interface Result {
   stars: Stars
   stats: Stat[]
   badges: string[]
+  reward?: RewardOutcome | 'notPerfect'
 }
 
 interface GameProps {
@@ -53,10 +55,16 @@ function SequenceGame({ op, sequence, group, onAgain }: GameProps) {
     }
     const results = questions.map((question, i) => ({ question, firstTry: !missed.has(i) }))
     const earnedStars = starsByGroup(results)
-    const update = saveRound({ points: round.points, bestStreak: round.bestStreak, earnedStars })
+    const update = saveRound({
+      points: round.points,
+      bestStreak: round.bestStreak,
+      earnedStars,
+      rewardKey: missed.size === 0 ? exerciseKey(op.id, 'sequence', [group]) : undefined,
+    })
     setResult({
       stars: earnedStars.get(group) ?? 0,
       badges: recordBadges(update),
+      reward: update?.reward,
       stats: [
         { label: 'Napoprvé správně', value: `${questions.length - missed.size} / ${questions.length}` },
         { label: 'Body', value: round.points },

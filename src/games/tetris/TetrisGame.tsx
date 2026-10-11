@@ -4,6 +4,7 @@ import { MuteButton } from '../../components/MuteButton'
 import { smallBurst } from '../../lib/confetti'
 import { playCorrect, playStreak, playWrong } from '../../lib/sound'
 import { useProfiles } from '../../profiles/ProfileContext'
+import { usePausePlayClock } from '../shared/playClock'
 import { ResultScreen, type Stat } from '../shared/ResultScreen'
 import {
   type Action,
@@ -64,6 +65,7 @@ function TetrisGame({ onAgain }: { onAgain: () => void }) {
   const [result, setResult] = useState<Result | null>(null)
   const best = activeProfile?.tetris.bestScore ?? 0
   const playing = phase === 'playing' && !state.over
+  usePausePlayClock(!playing)
 
   // Gravity: the piece falls one row per interval, faster on higher levels.
   useEffect(() => {

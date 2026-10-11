@@ -6,6 +6,7 @@ import { celebrate } from '../../lib/confetti'
 import { playCorrect, playJump, playWin, playWrong } from '../../lib/sound'
 import type { Stars } from '../../lib/storage'
 import { useProfiles } from '../../profiles/ProfileContext'
+import { usePausePlayClock } from '../shared/playClock'
 import { DINO_SIZE, DINO_X, type Input, newRun, recordRun, type RunState, scoreOf, starsForScore, step, WIDTH } from './logic'
 
 const BACK_TO = '/zabava'
@@ -34,6 +35,7 @@ export default function DinoGame() {
   const runRef = useRef<RunState>(newRun())
   const inputRef = useRef<Input>({ jump: false, duck: false })
   const overAtRef = useRef(0)
+  usePausePlayClock(phase !== 'playing')
 
   function start() {
     if (phase === 'over') {

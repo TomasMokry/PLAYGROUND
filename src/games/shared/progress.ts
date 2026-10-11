@@ -8,6 +8,8 @@ export interface RoundOutcome {
   earnedStars?: Map<number, Stars>
   /** Correct answers in a time-attack round. */
   timeAttackScore?: number
+  /** Set when the round had no mistake: the exercise that earns play time (see reward.ts). */
+  rewardKey?: string
 }
 
 export interface RoundUpdate {

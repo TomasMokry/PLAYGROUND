@@ -4,6 +4,7 @@ import { GameShell } from '../shared/GameShell'
 import { ResultScreen, type Stat } from '../shared/ResultScreen'
 import { requeue, starsFor } from '../shared/rules'
 import { useRound } from '../shared/useRound'
+import { exerciseKey, isPerfect, type RewardOutcome } from '../shared/reward'
 import { formatDuration, recordBadges, useSaveRound } from '../shared/useSaveRound'
 import { ChoiceCard } from './ChoiceCard'
 import { choiceRound, roundWords, ROUND_COUNT, type ChoiceQuestion } from './logic'
@@ -26,6 +27,7 @@ interface Result {
   stars: Stars
   stats: Stat[]
   badges: string[]
+  reward?: RewardOutcome | 'notPerfect'
 }
 
 const PROGRESS_COLORS: Record<ModeId, string> = {
@@ -66,10 +68,16 @@ function EnglishGame({ topic, mode, onAgain }: { topic: Topic; mode: ModeId; onA
     if (rest.length > 0) return
 
     const stars = starsFor(right, finished)
-    const update = saveRound({ points: round.points, bestStreak: round.bestStreak, earnedStars: new Map([[mode, stars]]) })
+    const update = saveRound({
+      points: round.points,
+      bestStreak: round.bestStreak,
+      earnedStars: new Map([[mode, stars]]),
+      rewardKey: isPerfect(right, finished) ? exerciseKey(topic.id, mode) : undefined,
+    })
     setResult({
       stars,
       badges: recordBadges(update),
+      reward: update?.reward,
       stats: [
         { label: 'Napoprvé správně', value: `${right} / ${finished}` },
         { label: 'Body', value: round.points },

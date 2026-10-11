@@ -11,6 +11,7 @@ import TopicHome from './games/english/TopicHome'
 import { MODES, TOPIC_LIST } from './games/english/topics'
 import MemoryMode from './games/memory/MemoryGame'
 import { SUBJECT_LIST } from './games/registry'
+import { PlayTimeGate } from './games/shared/PlayTimeGate'
 import TetrisMode from './games/tetris/TetrisGame'
 import TicTacToeMode from './games/tictactoe/TicTacToeGame'
 import Home from './pages/Home'
@@ -52,10 +53,11 @@ export default function App() {
               <Route path={`${topic.path}/napis`} element={<RequireProfile><EnglishMode key={`${topic.id}-write`} topic={topic} mode={MODES.write} /></RequireProfile>} />
             </Fragment>
           ))}
-          <Route path="/tetris" element={<RequireProfile><TetrisMode /></RequireProfile>} />
-          <Route path="/piskvorky" element={<RequireProfile><TicTacToeMode /></RequireProfile>} />
-          <Route path="/dino" element={<RequireProfile><DinoGame /></RequireProfile>} />
-          <Route path="/pexeso" element={<RequireProfile><MemoryMode /></RequireProfile>} />
+          {/* Fun games need play time, earned by learning rounds without a mistake. */}
+          <Route path="/tetris" element={<RequireProfile><PlayTimeGate><TetrisMode /></PlayTimeGate></RequireProfile>} />
+          <Route path="/piskvorky" element={<RequireProfile><PlayTimeGate><TicTacToeMode /></PlayTimeGate></RequireProfile>} />
+          <Route path="/dino" element={<RequireProfile><PlayTimeGate><DinoGame /></PlayTimeGate></RequireProfile>} />
+          <Route path="/pexeso" element={<RequireProfile><PlayTimeGate><MemoryMode /></PlayTimeGate></RequireProfile>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>

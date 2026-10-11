@@ -1,6 +1,7 @@
 import { GamePanel } from '../components/GamePanel'
 import { Header } from '../components/Header'
 import { SUBJECT_LIST } from '../games/registry'
+import { minutesOf } from '../games/shared/reward'
 import { bestStreak, totalPoints, totalStars } from '../lib/storage'
 import { useActiveProfile } from '../profiles/ProfileContext'
 
@@ -26,7 +27,11 @@ export default function Home() {
 
         <section className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {SUBJECT_LIST.map((subject) => (
-            <GamePanel key={subject.id} game={subject} />
+            <GamePanel
+              key={subject.id}
+              game={subject}
+              badge={subject.rewardGated ? (profile.reward.bankMs > 0 ? `🎮 ${minutesOf(profile.reward.bankMs)} min` : '🔒') : undefined}
+            />
           ))}
         </section>
       </main>

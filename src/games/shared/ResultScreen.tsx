@@ -4,6 +4,7 @@ import { StarRating } from '../../components/StarRating'
 import { celebrate } from '../../lib/confetti'
 import { playWin } from '../../lib/sound'
 import type { Stars } from '../../lib/storage'
+import { minutesOf, type RewardOutcome } from './reward'
 
 export interface Stat {
   label: string
@@ -17,6 +18,8 @@ interface Props {
   badges?: string[]
   onAgain: () => void
   backTo: string
+  /** Play time earned by a learning round; leave out for games that don't earn any. */
+  reward?: RewardOutcome | 'notPerfect'
 }
 
 const HEADLINES: Record<Stars, string> = {
@@ -26,15 +29,16 @@ const HEADLINES: Record<Stars, string> = {
   3: 'Perfektní! Jsi mistr! 🏆',
 }
 
-export function ResultScreen({ stars, stats, badges = [], onAgain, backTo }: Props) {
+export function ResultScreen({ stars, stats, badges = [], onAgain, backTo, reward }: Props) {
   const celebrated = useRef(false)
 
   useEffect(() => {
     if (celebrated.current) return
     celebrated.current = true
-    if (stars > 0 || badges.length > 0) playWin()
-    if (stars === 3 || badges.length > 0) celebrate()
-  }, [stars, badges.length])
+    const earned = typeof reward === 'object' && reward.kind === 'earned'
+    if (stars > 0 || badges.length > 0 || earned) playWin()
+    if (stars === 3 || badges.length > 0 || earned) celebrate()
+  }, [stars, badges.length, reward])
 
   return (
     <div className="flex w-full max-w-lg flex-col items-center gap-6 rounded-3xl bg-white p-8 text-center shadow-xl">
@@ -50,6 +54,8 @@ export function ResultScreen({ stars, stats, badges = [], onAgain, backTo }: Pro
           ))}
         </div>
       )}
+
+      {reward && <RewardBanner reward={reward} />}
 
       <dl className="grid w-full grid-cols-2 gap-3">
         {stats.map((s) => (
@@ -74,5 +80,29 @@ export function ResultScreen({ stars, stats, badges = [], onAgain, backTo }: Pro
         </button>
       </div>
     </div>
+  )
+}
+
+function RewardBanner({ reward }: { reward: RewardOutcome | 'notPerfect' }) {
+  if (reward === 'notPerfect') {
+    return <p className="font-bold text-slate-500">Bez jediné chyby získáš čas na hraní 🎮</p>
+  }
+  if (reward.kind === 'earned') {
+    return (
+      <div className="flex w-full animate-pop flex-col items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-400 to-orange-400 p-4 text-white shadow-lg">
+        <p className="text-xl font-black">🎮 Získal jsi {minutesOf(reward.ms)} minut hraní!</p>
+        <p className="font-semibold text-white/90">V bance máš {minutesOf(reward.bankMs)} min</p>
+        <Link to="/zabava" className="rounded-full bg-white px-5 py-2 font-extrabold text-rose-500 shadow-sm transition hover:scale-105">
+          Jít hrát →
+        </Link>
+      </div>
+    )
+  }
+  return (
+    <p className="rounded-2xl bg-sky-50 px-4 py-3 font-bold text-sky-700">
+      {reward.kind === 'already'
+        ? 'Bez chyby! 👏 Za tohle cvičení už jsi dnes čas na hraní dostal. Zkus jiné! 💡'
+        : 'Bez chyby! 👏 Banka hraní je plná. Nejdřív si zahraj 🎮'}
+    </p>
   )
 }

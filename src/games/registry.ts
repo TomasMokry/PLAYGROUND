@@ -11,6 +11,8 @@ export interface Subject extends PanelInfo {
   id: 'math' | 'english' | 'fun'
   path: string
   games: GameInfo[]
+  /** Games open only with play time in the bank (see games/shared/reward.ts). */
+  rewardGated?: boolean
 }
 
 /**
@@ -93,6 +95,7 @@ export const SUBJECTS = {
     icon: '🎮',
     gradient: 'from-rose-400 to-orange-400',
     path: '/zabava',
+    rewardGated: true,
     games: [
       {
         id: 'tetris',

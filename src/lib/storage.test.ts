@@ -30,6 +30,7 @@ describe('loadData', () => {
     expect(profile.multiplication.stars[6]).toBe(3)
     expect(profile.multiplication.bestScore).toBe(0)
     expect(profile.colors).toEqual({ stars: {}, bestStreak: 0, timeAttackBest: 0, totalPoints: 0, bestScore: 0 })
+    expect(profile.reward).toEqual({ bankMs: 0, claimed: {} })
     expect(totalStars(profile)).toBe(3)
     expect(totalStars(profile, ['colors', 'numbers'])).toBe(0)
   })

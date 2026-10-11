@@ -8,6 +8,7 @@ import { parseGroups, randomQuestion, TIME_ATTACK_SECONDS, timeAttackStars } fro
 import { groupLabels, type Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
 import { ResultScreen, type Stat } from '../shared/ResultScreen'
+import { exerciseKey, isPerfectTimeAttack, type RewardOutcome } from '../shared/reward'
 import { recordBadges, useSaveRound } from '../shared/useSaveRound'
 import { useRound } from '../shared/useRound'
 
@@ -27,6 +28,7 @@ interface Result {
   stars: Stars
   stats: Stat[]
   badges: string[]
+  reward?: RewardOutcome | 'notPerfect'
 }
 
 function TimeAttackGame({ op, groups, onAgain }: { op: Operation; groups: number[]; onAgain: () => void }) {
@@ -60,10 +62,16 @@ function TimeAttackGame({ op, groups, onAgain }: { op: Operation; groups: number
 
   function finish() {
     setPhase('done')
-    const update = saveRound({ points: round.points, bestStreak: round.bestStreak, timeAttackScore: correct })
+    const update = saveRound({
+      points: round.points,
+      bestStreak: round.bestStreak,
+      timeAttackScore: correct,
+      rewardKey: isPerfectTimeAttack(correct, wrong) ? exerciseKey(op.id, 'timeattack', groups) : undefined,
+    })
     setResult({
       stars: timeAttackStars(correct),
       badges: recordBadges(update),
+      reward: update?.reward,
       stats: [
         { label: 'Správně', value: `✅ ${correct}` },
         { label: 'Chyby', value: `❌ ${wrong}` },

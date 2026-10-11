@@ -26,11 +26,20 @@ export interface GameProgress {
   bestScore: number
 }
 
+/** Play time earned for the fun games by perfect learning rounds. */
+export interface RewardState {
+  /** Play time left, in milliseconds. */
+  bankMs: number
+  /** Exercise key → local day (YYYY-MM-DD) it last earned play time; each exercise pays once a day. */
+  claimed: Record<string, string>
+}
+
 export type Profile = {
   id: string
   name: string
   avatar: string
   muted: boolean
+  reward: RewardState
 } & Record<GameId, GameProgress>
 
 export interface AppData {
@@ -55,6 +64,8 @@ export const emptyProgress = (): GameProgress => ({
   bestScore: 0,
 })
 
+export const emptyReward = (): RewardState => ({ bankMs: 0, claimed: {} })
+
 const emptyGames = () => Object.fromEntries(GAME_IDS.map((id) => [id, emptyProgress()])) as Record<GameId, GameProgress>
 
 export function createProfile(name: string, avatar: string): Profile {
@@ -63,6 +74,7 @@ export function createProfile(name: string, avatar: string): Profile {
     name: name.trim(),
     avatar,
     muted: false,
+    reward: emptyReward(),
     ...emptyGames(),
   }
 }
@@ -77,6 +89,7 @@ export function loadData(): AppData {
     parsed.profiles = parsed.profiles.map((p) => {
       const filled = { ...p }
       for (const id of GAME_IDS) filled[id] = { ...emptyProgress(), ...p[id] }
+      filled.reward = { ...emptyReward(), ...p.reward }
       return filled
     })
     return parsed

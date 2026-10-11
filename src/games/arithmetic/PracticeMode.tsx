@@ -7,6 +7,7 @@ import { groupLabels, type Operation } from './operations'
 import { QuestionCard } from './QuestionCard'
 import { ResultScreen, type Stat } from '../shared/ResultScreen'
 import type { Stars } from '../../lib/storage'
+import { exerciseKey, isPerfect, type RewardOutcome } from '../shared/reward'
 import { formatDuration, recordBadges, useSaveRound } from '../shared/useSaveRound'
 import { useRound } from '../shared/useRound'
 
@@ -26,6 +27,7 @@ interface Result {
   stars: Stars
   stats: Stat[]
   badges: string[]
+  reward?: RewardOutcome | 'notPerfect'
 }
 
 function PracticeGame({ op, groups, onAgain }: { op: Operation; groups: number[]; onAgain: () => void }) {
@@ -53,10 +55,16 @@ function PracticeGame({ op, groups, onAgain }: { op: Operation; groups: number[]
     if (rest.length > 0) return
 
     const firstTry = done.filter((r) => r.firstTry).length
-    const update = saveRound({ points: round.points, bestStreak: round.bestStreak, earnedStars: starsByGroup(done) })
+    const update = saveRound({
+      points: round.points,
+      bestStreak: round.bestStreak,
+      earnedStars: starsByGroup(done),
+      rewardKey: isPerfect(firstTry, done.length) ? exerciseKey(op.id, 'practice', groups) : undefined,
+    })
     setResult({
       stars: starsFor(firstTry, done.length),
       badges: recordBadges(update),
+      reward: update?.reward,
       stats: [
         { label: 'Napoprvé správně', value: `${firstTry} / ${done.length}` },
         { label: 'Body', value: round.points },
