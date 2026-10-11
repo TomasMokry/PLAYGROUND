@@ -77,6 +77,13 @@ export function playWin() {
   ])
 }
 
+export function playJump() {
+  play([
+    { freq: G5, at: 0, duration: 0.06, type: 'square', volume: 0.06 },
+    { freq: C6, at: 0.04, duration: 0.08, type: 'square', volume: 0.06 },
+  ])
+}
+
 export function playTick() {
   play([{ freq: 880, at: 0, duration: 0.05, type: 'square', volume: 0.05 }])
 }

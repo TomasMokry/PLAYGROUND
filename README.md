@@ -48,6 +48,9 @@ npm run lint       # oxlint
 - **Piškvorky** (`/piskvorky`): tic tac toe on a 3 × 3 board. Pick an opponent: the computer at **Lehká** (plays at random, but takes a win it sees), **Střední** (also blocks and takes the middle), **Těžká** (plays perfectly, so a draw is the best result), or **Dva hráči** on one device. Who starts swaps every game, and the score of the session is shown.
   - Stars against the computer (best kept): beat Lehká = ★, beat Střední = ★★, draw or win against Těžká = ★★★.
 
+- **Dino** (`/dino`): a runner like Chrome's offline dinosaur, drawn on a canvas. The dino runs by itself and speeds up; jump over cacti (space, ↑, a tap on the board or the **Skok** button) and duck under birds (↓ or hold **Skrčit**). Birds come from 150 points, groups of three cacti from 100. A jump pressed just before landing still counts, and the hitbox is a bit smaller than the picture.
+  - Score grows with distance (about 9 a second at the start), with a sound every 100. Stars by score in one run: 100 = ★, 300 = ★★, 600 = ★★★ (best kept). The best score is saved as the record.
+
 ### Gamification rules
 
 | What | Rule |
@@ -89,6 +92,9 @@ src/
   games/tictactoe/             Zábava: Piškvorky
     logic.ts                   board, winner, computer player (incl. minimax), stars + tests
     TicTacToeGame.tsx          opponent picker + board
+  games/dino/                  Zábava: Dino
+    logic.ts                   running, jumping, ducking, obstacles, collisions, scoring + tests
+    DinoGame.tsx               canvas drawing, animation loop, keyboard + touch controls
   games/english/               Angličtina
     topics.ts                  word lists (colors, numbers) and topic texts + tests
     logic.ts                   rounds, answer options, spelling check, hints + tests

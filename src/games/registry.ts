@@ -110,6 +110,14 @@ export const SUBJECTS = {
         gradient: 'from-sky-500 to-cyan-500',
         path: '/piskvorky',
       },
+      {
+        id: 'dino',
+        title: 'Dino',
+        description: 'Běž s dinosaurem, přeskakuj kaktusy a uhýbej ptákům',
+        icon: '🦖',
+        gradient: 'from-lime-500 to-green-600',
+        path: '/dino',
+      },
     ],
   },
 } satisfies Record<Subject['id'], Subject>
