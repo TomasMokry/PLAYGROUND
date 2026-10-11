@@ -9,6 +9,7 @@ import EnglishMode from './games/english/EnglishMode'
 import TopicHome from './games/english/TopicHome'
 import { MODES, TOPIC_LIST } from './games/english/topics'
 import { SUBJECT_LIST } from './games/registry'
+import TetrisMode from './games/tetris/TetrisGame'
 import Home from './pages/Home'
 import SubjectHome from './pages/SubjectHome'
 import { useProfiles } from './profiles/ProfileContext'
@@ -48,6 +49,7 @@ export default function App() {
               <Route path={`${topic.path}/napis`} element={<RequireProfile><EnglishMode key={`${topic.id}-write`} topic={topic} mode={MODES.write} /></RequireProfile>} />
             </Fragment>
           ))}
+          <Route path="/tetris" element={<RequireProfile><TetrisMode /></RequireProfile>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>

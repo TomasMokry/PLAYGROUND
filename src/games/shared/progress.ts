@@ -24,6 +24,7 @@ export function applyRound(progress: GameProgress, outcome: RoundOutcome): Round
     newBestStreak,
     newTimeAttackBest,
     progress: {
+      ...progress,
       stars: outcome.earnedStars ? mergeStars(progress.stars, outcome.earnedStars) : progress.stars,
       bestStreak: Math.max(progress.bestStreak, outcome.bestStreak),
       timeAttackBest: Math.max(progress.timeAttackBest, outcome.timeAttackScore ?? 0),

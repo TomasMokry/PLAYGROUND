@@ -28,7 +28,8 @@ describe('loadData', () => {
     const [profile] = loadData().profiles
     for (const id of GAME_IDS) expect(profile[id]).toBeDefined()
     expect(profile.multiplication.stars[6]).toBe(3)
-    expect(profile.colors).toEqual({ stars: {}, bestStreak: 0, timeAttackBest: 0, totalPoints: 0 })
+    expect(profile.multiplication.bestScore).toBe(0)
+    expect(profile.colors).toEqual({ stars: {}, bestStreak: 0, timeAttackBest: 0, totalPoints: 0, bestScore: 0 })
     expect(totalStars(profile)).toBe(3)
     expect(totalStars(profile, ['colors', 'numbers'])).toBe(0)
   })

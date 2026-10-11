@@ -8,7 +8,7 @@ export interface GameInfo extends PanelInfo {
 }
 
 export interface Subject extends PanelInfo {
-  id: 'math' | 'english'
+  id: 'math' | 'english' | 'fun'
   path: string
   games: GameInfo[]
 }
@@ -83,6 +83,24 @@ export const SUBJECTS = {
         icon: TOPICS.numbers.icon,
         gradient: 'from-cyan-500 to-sky-600',
         path: TOPICS.numbers.path,
+      },
+    ],
+  },
+  fun: {
+    id: 'fun',
+    title: 'Zábava',
+    description: 'Hry jen pro radost, třeba po procvičování',
+    icon: '🎮',
+    gradient: 'from-rose-400 to-orange-400',
+    path: '/zabava',
+    games: [
+      {
+        id: 'tetris',
+        title: 'Tetris',
+        description: 'Skládej padající kostky a mazej celé řady',
+        icon: '🧱',
+        gradient: 'from-indigo-500 to-purple-600',
+        path: '/tetris',
       },
     ],
   },

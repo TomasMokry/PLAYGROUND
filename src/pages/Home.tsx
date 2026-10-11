@@ -24,7 +24,7 @@ export default function Home() {
           </div>
         </section>
 
-        <section className="mt-10 grid gap-6 sm:grid-cols-2">
+        <section className="mt-10 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
           {SUBJECT_LIST.map((subject) => (
             <GamePanel key={subject.id} game={subject} />
           ))}

@@ -1,4 +1,4 @@
-# Škola hrou: matematika a angličtina pro děti
+# Škola hrou: matematika, angličtina a zábava pro děti
 
 A small React app where kids (ages 8–10) practice math and English through games. It runs entirely in the browser, with no backend. All progress is stored in `localStorage`.
 
@@ -16,7 +16,7 @@ npm run lint       # oxlint
 ## What's inside
 
 - **Player profiles:** each child picks a name and an animal avatar. Stars, points, records and the mute setting are saved per player.
-- **Home page:** a panel for each subject, **Matematika** (`/matika`) and **Angličtina** (`/anglictina`). Each subject page lists its games. Games not built yet show as "Již brzy".
+- **Home page:** a panel for each subject, **Matematika** (`/matika`), **Angličtina** (`/anglictina`) and **Zábava** (`/zabava`). Each subject page lists its games. Games not built yet show as "Již brzy".
 
 ### Matematika
 
@@ -37,6 +37,13 @@ npm run lint       # oxlint
 - **Slovníček:** the word list on each topic page. Click a word to hear it.
 - Words are read out loud in British English with the browser's built-in speech synthesis (no audio files). It respects the mute button, and the 🔊 buttons hide where speech isn't available.
 - Wrong answers come back at the end of the round, as in Trénink. Stars are saved per mode.
+
+### Zábava
+
+- **Tetris** (`/tetris`): classic falling blocks on a 10 × 20 board, with a ghost piece showing where the piece lands and a preview of the next one. Pieces come in shuffled bags of all seven.
+  - Controls: arrows ← → move, ↑ (or X) turns, ↓ drops faster, space drops at once, P / Esc pauses. Big on-screen buttons do the same on tablets. The game pauses when the tab is hidden.
+  - Score: 100 / 300 / 500 / 800 × level for 1–4 lines at once, plus 1 per row of soft drop and 2 per row of hard drop. The level goes up every 10 lines and the pieces fall faster. Clearing 4 lines at once ("TETRIS!") sets off confetti.
+  - Stars by lines cleared in one game: 5 = ★, 20 = ★★, 40 = ★★★ (best kept). The best score is saved as the record. Tetris score does not count towards the learning points (Body) on the home page.
 
 ### Gamification rules
 
@@ -73,6 +80,9 @@ src/
     OperationHome.tsx          table/level selection + mode cards
     SequenceMode.tsx / PracticeMode.tsx / TimeAttackMode.tsx
     QuestionCard.tsx           equation, answer input, numpad, feedback
+  games/tetris/                Zábava: Tetris
+    logic.ts                   board, pieces, moves, line clears, scoring (pure reducer) + tests
+    TetrisGame.tsx             board, side panel, keyboard + touch controls
   games/english/               Angličtina
     topics.ts                  word lists (colors, numbers) and topic texts + tests
     logic.ts                   rounds, answer options, spelling check, hints + tests
@@ -91,7 +101,7 @@ src/
 1. Add a panel to its subject's `games` in `src/games/registry.ts`, with a `path` so the panel becomes clickable.
 2. Create `src/games/<game>/` with its screens. Put the rules in a pure `logic.ts` with tests.
 3. Register the routes in `src/App.tsx`, wrapped in `<RequireProfile>`.
-4. If it stores progress, add its id to `OPERATION_IDS`, `TOPIC_IDS` or a new list in `GAME_IDS` (`src/lib/storage.ts`). `loadData` fills in empty progress for every id, so existing saves keep working.
+4. If it stores progress, add its id to `OPERATION_IDS`, `TOPIC_IDS`, `FUN_IDS` or a new list in `GAME_IDS` (`src/lib/storage.ts`). `loadData` fills in empty progress for every id, so existing saves keep working.
 
 A new English topic only needs a `TOPICS` entry (`games/english/topics.ts`), its id in `TOPIC_IDS` and a panel in the registry.
 

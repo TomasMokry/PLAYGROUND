@@ -8,8 +8,12 @@ export type OperationId = (typeof OPERATION_IDS)[number]
 export const TOPIC_IDS = ['colors', 'numbers'] as const
 export type TopicId = (typeof TOPIC_IDS)[number]
 
+/** Just-for-fun games. */
+export const FUN_IDS = ['tetris'] as const
+export type FunId = (typeof FUN_IDS)[number]
+
 /** Every game that keeps its own progress. */
-export const GAME_IDS = [...OPERATION_IDS, ...TOPIC_IDS] as const
+export const GAME_IDS = [...OPERATION_IDS, ...TOPIC_IDS, ...FUN_IDS] as const
 export type GameId = (typeof GAME_IDS)[number]
 
 export interface GameProgress {
@@ -18,6 +22,8 @@ export interface GameProgress {
   bestStreak: number
   timeAttackBest: number
   totalPoints: number
+  /** Best score of a single game, for games scored freely like Tetris. */
+  bestScore: number
 }
 
 export type Profile = {
@@ -46,6 +52,7 @@ export const emptyProgress = (): GameProgress => ({
   bestStreak: 0,
   timeAttackBest: 0,
   totalPoints: 0,
+  bestScore: 0,
 })
 
 const emptyGames = () => Object.fromEntries(GAME_IDS.map((id) => [id, emptyProgress()])) as Record<GameId, GameProgress>

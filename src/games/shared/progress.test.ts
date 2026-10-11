@@ -10,7 +10,7 @@ describe('applyRound', () => {
       bestStreak: 7,
       earnedStars: new Map([[6, 3], [7, 1]] as const),
     })
-    expect(progress).toEqual({ stars: { 6: 3, 7: 1 }, bestStreak: 7, timeAttackBest: 0, totalPoints: 220 })
+    expect(progress).toEqual({ stars: { 6: 3, 7: 1 }, bestStreak: 7, timeAttackBest: 0, totalPoints: 220, bestScore: 0 })
     expect(newBestStreak).toBe(true)
     expect(newTimeAttackBest).toBe(false)
   })
