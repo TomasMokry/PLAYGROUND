@@ -118,6 +118,14 @@ export const SUBJECTS = {
         gradient: 'from-lime-500 to-green-600',
         path: '/dino',
       },
+      {
+        id: 'memory',
+        title: 'Pexeso',
+        description: 'Otáčej kartičky a hledej dvojice. Sám nebo ve dvou',
+        icon: '🃏',
+        gradient: 'from-fuchsia-500 to-violet-600',
+        path: '/pexeso',
+      },
     ],
   },
 } satisfies Record<Subject['id'], Subject>

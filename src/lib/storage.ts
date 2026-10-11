@@ -9,7 +9,7 @@ export const TOPIC_IDS = ['colors', 'numbers'] as const
 export type TopicId = (typeof TOPIC_IDS)[number]
 
 /** Just-for-fun games. */
-export const FUN_IDS = ['tetris', 'tictactoe', 'dino'] as const
+export const FUN_IDS = ['tetris', 'tictactoe', 'dino', 'memory'] as const
 export type FunId = (typeof FUN_IDS)[number]
 
 /** Every game that keeps its own progress. */

@@ -51,6 +51,9 @@ npm run lint       # oxlint
 - **Dino** (`/dino`): a runner like Chrome's offline dinosaur, drawn on a canvas. The dino runs by itself and speeds up; jump over cacti (space, ↑, a tap on the board or the **Skok** button) and duck under birds (↓ or hold **Skrčit**). Birds come from 150 points, groups of three cacti from 100. A jump pressed just before landing still counts, and the hitbox is a bit smaller than the picture.
   - Score grows with distance (about 9 a second at the start), with a sound every 100. Stars by score in one run: 100 = ★, 300 = ★★, 600 = ★★★ (best kept). The best score is saved as the record.
 
+- **Pexeso** (`/pexeso`): the memory card game. Pick pictures (**Zvířátka**, **Jídlo**, **Doprava**), alone or **Dva hráči**, and a size: **Malé** (6 pairs), **Střední** (8), **Velké** (12). Cards flip in 3D; a missed pair stays face up for a second. With two players a found pair earns another turn and a miss passes it on; whoever finds more pairs wins.
+  - Stars when playing alone, per size, by moves per pair: ≤ 1.75 = ★★★, ≤ 2.5 = ★★, ≤ 3.5 = ★ (best kept). Two-player games are not saved.
+
 ### Gamification rules
 
 | What | Rule |
@@ -95,6 +98,9 @@ src/
   games/dino/                  Zábava: Dino
     logic.ts                   running, jumping, ducking, obstacles, collisions, scoring + tests
     DinoGame.tsx               canvas drawing, animation loop, keyboard + touch controls
+  games/memory/                Zábava: Pexeso
+    logic.ts                   themes, sizes, dealing, flipping, turns, stars + tests
+    MemoryGame.tsx             setup (pictures, players, size) + board of flipping cards
   games/english/               Angličtina
     topics.ts                  word lists (colors, numbers) and topic texts + tests
     logic.ts                   rounds, answer options, spelling check, hints + tests

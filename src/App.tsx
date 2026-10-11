@@ -9,6 +9,7 @@ import DinoGame from './games/dino/DinoGame'
 import EnglishMode from './games/english/EnglishMode'
 import TopicHome from './games/english/TopicHome'
 import { MODES, TOPIC_LIST } from './games/english/topics'
+import MemoryMode from './games/memory/MemoryGame'
 import { SUBJECT_LIST } from './games/registry'
 import TetrisMode from './games/tetris/TetrisGame'
 import TicTacToeMode from './games/tictactoe/TicTacToeGame'
@@ -54,6 +55,7 @@ export default function App() {
           <Route path="/tetris" element={<RequireProfile><TetrisMode /></RequireProfile>} />
           <Route path="/piskvorky" element={<RequireProfile><TicTacToeMode /></RequireProfile>} />
           <Route path="/dino" element={<RequireProfile><DinoGame /></RequireProfile>} />
+          <Route path="/pexeso" element={<RequireProfile><MemoryMode /></RequireProfile>} />
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </HashRouter>
