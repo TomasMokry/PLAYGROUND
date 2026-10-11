@@ -6,7 +6,7 @@ import type { RewardState } from '../../lib/storage'
  * Each exercise (game + mode + tables/levels) pays once a day, so repeating the easiest one doesn't help.
  */
 
-export const REWARD_MS = 10 * 60_000
+export const REWARD_MS = 5 * 60_000
 export const BANK_CAP_MS = 30 * 60_000
 /** A time-attack round needs at least this many answers (and no mistake) to count as perfect. */
 export const TIME_ATTACK_MIN_CORRECT = 20
