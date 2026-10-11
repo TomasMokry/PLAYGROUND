@@ -3,7 +3,7 @@ import { BackLink } from '../components/BackLink'
 import { GamePanel } from '../components/GamePanel'
 import { Header } from '../components/Header'
 import type { Subject } from '../games/registry'
-import { minutesOf, REWARD_MS } from '../games/shared/reward'
+import { minutesOf, minutesWord, REWARD_MS } from '../games/shared/reward'
 import { totalStars } from '../lib/storage'
 import { useActiveProfile } from '../profiles/ProfileContext'
 
@@ -52,7 +52,7 @@ function PlayTimeBanner({ bankMs }: { bankMs: number }) {
     <div className="mt-6 rounded-3xl bg-white p-5 shadow-sm">
       <p className="text-lg font-bold">
         🔒 Hry jsou zamčené. Dokonči cvičení z matematiky nebo angličtiny <span className="text-rose-500">bez jediné chyby</span> a získáš{' '}
-        {minutesOf(REWARD_MS)} minut hraní.
+        {minutesOf(REWARD_MS)} {minutesWord(minutesOf(REWARD_MS))} hraní.
       </p>
       <div className="mt-4 flex flex-wrap gap-3">
         <Link to="/matika" className="rounded-full bg-violet-600 px-5 py-2 font-extrabold text-white shadow-sm transition hover:bg-violet-700">

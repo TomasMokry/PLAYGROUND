@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { emptyReward } from '../../lib/storage'
-import { BANK_CAP_MS, earnReward, exerciseKey, isPerfect, isPerfectTimeAttack, localDay, minutesOf, REWARD_MS, spendPlayTime } from './reward'
+import { BANK_CAP_MS, earnReward, exerciseKey, isPerfect, isPerfectTimeAttack, localDay, minutesOf, minutesWord, REWARD_MS, spendPlayTime } from './reward'
 
 const DAY = '2026-10-11'
 
@@ -30,7 +30,7 @@ describe('exerciseKey and localDay', () => {
 })
 
 describe('earnReward', () => {
-  it('adds 5 minutes for a new exercise', () => {
+  it('adds 3 minutes for a new exercise', () => {
     const { reward, outcome } = earnReward(emptyReward(), 'a', DAY)
     expect(outcome).toEqual({ kind: 'earned', ms: REWARD_MS, bankMs: REWARD_MS })
     expect(reward.claimed).toEqual({ a: DAY })
@@ -64,6 +64,10 @@ describe('spendPlayTime', () => {
 
   it('rounds minutes up', () => {
     expect(minutesOf(30_000)).toBe(1)
-    expect(minutesOf(REWARD_MS)).toBe(5)
+    expect(minutesOf(REWARD_MS)).toBe(3)
+  })
+
+  it('picks the Czech plural of minutes', () => {
+    expect([1, 2, 4, 5, 30].map(minutesWord)).toEqual(['minutu', 'minuty', 'minuty', 'minut', 'minut'])
   })
 })

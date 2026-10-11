@@ -6,7 +6,7 @@ import type { RewardState } from '../../lib/storage'
  * Each exercise (game + mode + tables/levels) pays once a day, so repeating the easiest one doesn't help.
  */
 
-export const REWARD_MS = 5 * 60_000
+export const REWARD_MS = 3 * 60_000
 export const BANK_CAP_MS = 30 * 60_000
 /** A time-attack round needs at least this many answers (and no mistake) to count as perfect. */
 export const TIME_ATTACK_MIN_CORRECT = 20
@@ -51,3 +51,10 @@ export function spendPlayTime(reward: RewardState, ms: number): RewardState {
 
 /** Whole minutes for display, rounded up so "0:30 left" still reads as 1 min. */
 export const minutesOf = (ms: number): number => Math.ceil(ms / 60_000)
+
+/** Czech plural of "minuta" in the accusative: 1 minutu, 2–4 minuty, 5+ minut. */
+export function minutesWord(n: number): string {
+  if (n === 1) return 'minutu'
+  if (n >= 2 && n <= 4) return 'minuty'
+  return 'minut'
+}

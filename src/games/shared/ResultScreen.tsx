@@ -4,7 +4,7 @@ import { StarRating } from '../../components/StarRating'
 import { celebrate } from '../../lib/confetti'
 import { playWin } from '../../lib/sound'
 import type { Stars } from '../../lib/storage'
-import { minutesOf, type RewardOutcome } from './reward'
+import { minutesOf, minutesWord, type RewardOutcome } from './reward'
 
 export interface Stat {
   label: string
@@ -90,7 +90,7 @@ function RewardBanner({ reward }: { reward: RewardOutcome | 'notPerfect' }) {
   if (reward.kind === 'earned') {
     return (
       <div className="flex w-full animate-pop flex-col items-center gap-2 rounded-2xl bg-gradient-to-r from-rose-400 to-orange-400 p-4 text-white shadow-lg">
-        <p className="text-xl font-black">🎮 Získal jsi {minutesOf(reward.ms)} minut hraní!</p>
+        <p className="text-xl font-black">🎮 Získal jsi {minutesOf(reward.ms)} {minutesWord(minutesOf(reward.ms))} hraní!</p>
         <p className="font-semibold text-white/90">V bance máš {minutesOf(reward.bankMs)} min</p>
         <Link to="/zabava" className="rounded-full bg-white px-5 py-2 font-extrabold text-rose-500 shadow-sm transition hover:scale-105">
           Jít hrát →
