@@ -58,7 +58,7 @@ npm run lint       # oxlint
 
 The Zábava games are a reward. They are locked until the child earns play time:
 
-- A learning round **without a mistake** adds **3 minutes** to the player's bank. That means every answer right on the first try in Řada, Trénink, Jak se to řekne?, Najdi and Napiš (no Nápověda). In Závod s časem it means no mistake and at least 20 correct.
+- A learning round **without a mistake** adds **1 minute** to the player's bank. That means every answer right on the first try in Řada, Trénink, Jak se to řekne?, Najdi and Napiš (no Nápověda). In Závod s časem it means no mistake and at least 20 correct.
 - The bank holds at most **30 minutes**.
 - The same exercise (game + mode + selected tables/levels) pays **once a day**, so repeating the easiest one doesn't help.
 - Time counts down only while a fun game runs: not while the tab is hidden, and not on the Tetris/Dino start, pause or game-over screens. A pill in the corner shows what's left, with a warning one minute before the end. When it runs out, the game ends and the child is sent back to practice.

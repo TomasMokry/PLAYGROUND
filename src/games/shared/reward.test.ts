@@ -30,7 +30,7 @@ describe('exerciseKey and localDay', () => {
 })
 
 describe('earnReward', () => {
-  it('adds 3 minutes for a new exercise', () => {
+  it('adds 1 minute for a new exercise', () => {
     const { reward, outcome } = earnReward(emptyReward(), 'a', DAY)
     expect(outcome).toEqual({ kind: 'earned', ms: REWARD_MS, bankMs: REWARD_MS })
     expect(reward.claimed).toEqual({ a: DAY })
@@ -49,9 +49,10 @@ describe('earnReward', () => {
   })
 
   it('fills the bank up to the cap and then stops', () => {
-    const almost = { bankMs: BANK_CAP_MS - 2 * 60_000, claimed: {} }
+    const room = REWARD_MS / 2
+    const almost = { bankMs: BANK_CAP_MS - room, claimed: {} }
     const { reward, outcome } = earnReward(almost, 'a', DAY)
-    expect(outcome).toEqual({ kind: 'earned', ms: 2 * 60_000, bankMs: BANK_CAP_MS })
+    expect(outcome).toEqual({ kind: 'earned', ms: room, bankMs: BANK_CAP_MS })
     expect(earnReward(reward, 'b', DAY).outcome).toEqual({ kind: 'full' })
   })
 })
@@ -64,7 +65,7 @@ describe('spendPlayTime', () => {
 
   it('rounds minutes up', () => {
     expect(minutesOf(30_000)).toBe(1)
-    expect(minutesOf(REWARD_MS)).toBe(3)
+    expect(minutesOf(REWARD_MS)).toBe(1)
   })
 
   it('picks the Czech plural of minutes', () => {
